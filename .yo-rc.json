@@ -1,0 +1,48 @@
+{
+  "generator-chayka": {
+    "support": [
+      "UriProcessing",
+      "ConsolePages",
+      "Metaboxes"
+    ],
+    "register": [
+      "registerActions",
+      "registerFilters",
+      "registerResources",
+      "registerRoutes",
+      "registerConsolePages",
+      "registerMetaboxes"
+    ],
+    "appType": "plugin",
+    "appName": "Chayka.Comments",
+    "appDescription": "WordPress comments plugin built on Chayka framework",
+    "appKeywords": "WordPress, Chayka, comments",
+    "appVersion": "0.0.1",
+    "packagistVendor": "chayka",
+    "packagistPackage": "comments-wpp",
+    "phpNamespace": "Chayka\\Comments",
+    "chaykaFramework": "plugin",
+    "chaykaFrameworkDeps": {
+      "helpers": true,
+      "mvc": true,
+      "wp": true,
+      "core": true
+    },
+    "initDep": true,
+    "initDepPhpClass": "Chayka\\WP\\Plugin",
+    "initDepMessage": "Chayka Framework functionality is not available",
+    "gitInit": true,
+    "gitRemote": "github",
+    "githubUser": "chayka",
+    "gitRemoteRepo": "git@github.com:chayka/Chayka.Comments.wpp.git",
+    "gitPush": false,
+    "ideaProject": "Chayka.Comments.wpp",
+    "ideaDeploymentPath": "/Chayka.Core.wpp/vendor/chayka/comments-wpp",
+    "appAuthor": "Boris Mossounov",
+    "appAuthorEmail": "borix@tut.by",
+    "appAuthorUri": "http://anotherguru.me/",
+    "appLicense": "proprietary",
+    "ideaDeploymentServer": "WP Plugins",
+    "appClass": "Plugin"
+  }
+}

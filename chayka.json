@@ -1,0 +1,32 @@
+{
+    "appType": "plugin",
+    "appName": "Chayka.Comments",
+    "appDescription": "WordPress comments plugin built on Chayka framework",
+    "appKeywords": "WordPress, Chayka, comments",
+    "appVersion": "0.0.1",
+    "appAuthor": "Boris Mossounov",
+    "appAuthorEmail": "borix@tut.by",
+    "appAuthorUri": "http://anotherguru.me/",
+    "appLicense": "proprietary",
+    "phpNamespace": "Chayka\\Comments",
+    "chaykaFramework": "plugin",
+    "chaykaFrameworkDeps": {
+        "helpers": true,
+        "mvc": true,
+        "wp": true,
+        "core": true
+    },
+    "support": [
+        "UriProcessing",
+        "ConsolePages",
+        "Metaboxes"
+    ],
+    "register": [
+        "registerActions",
+        "registerFilters",
+        "registerResources",
+        "registerRoutes",
+        "registerConsolePages",
+        "registerMetaboxes"
+    ]
+}

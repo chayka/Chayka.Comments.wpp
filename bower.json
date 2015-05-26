@@ -1,0 +1,23 @@
+{
+    "name": "Chayka.Comments",
+    "description": "WordPress comments plugin built on Chayka framework",
+    "version": "0.0.1",
+    "license": "proprietary",
+    "authors": [
+        "Boris Mossounov <borix@tut.by>"
+    ],
+    "keywords": [
+        "WordPress",
+        "Chayka",
+        "comments"
+    ],
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "res/lib",
+        "test",
+        "tests"
+    ],
+    "dependencies": {}
+}
