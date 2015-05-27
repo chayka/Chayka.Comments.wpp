@@ -38,7 +38,16 @@ class Plugin extends WP\Plugin{
      */
     public function registerFilters() {
 		/* chayka: registerFilters */
+	    $this->addFilter('comments_template', 'getCommentsTemplateFile', 10, 0);
     }
+
+	/**
+	 * Inject our custom comments template
+	 * @return string
+	 */
+	public function getCommentsTemplateFile(){
+		return Plugin::getBasePath().'/comments.php';
+	}
 
     /**
      * Register scripts and styles here using $this->registerScript() and $this->registerStyle()
@@ -50,6 +59,9 @@ class Plugin extends WP\Plugin{
 
         $this->setResSrcDir('src/');
         $this->setResDistDir('dist/');
+
+	    $this->registerNgScript('chayka-comments', 'ng-modules/chayka-comments.js', ['chayka-modals', 'chayka-ajax', 'chayka-spinners', 'chayka-forms']);
+		$this->registerStyle('chayka-comments', 'ng-modules/chayka-comments.css', ['chayka-modals', 'chayka-spinners', 'chayka-forms']);
 
 		/* chayka: registerResources */
     }

@@ -22,13 +22,19 @@ module.exports = function(grunt) {
         // styles:
         less: {
             development:{
-                files:{
-                    'res/tmp/css/less.css': resFiles.less
-                }
+                expand: true,
+                flatten: true,
+                src: 'res/src/css/*.less',
+                dest: 'res/src/css/',
+                ext: '.css'
+                //'res/tmp/css/less.css': resFiles.less
             },
             developmentNg:{
-                files:{
-                }
+                expand: true,
+                flatten: true,
+                src: 'res/src/ng-modules/*.less',
+                dest: 'res/src/ng-modules/',
+                ext: '.css'
             }
         },
         autoprefixer: {
@@ -48,20 +54,11 @@ module.exports = function(grunt) {
             }
         },
         cssmin: {
-            theme: {
-                files: {
-                    'res/tmp/css/min.css': ['res/tmp/css/less.css']
-                }
-            },
-            plugin: {
-                files: {
-                    'res/dist/css/style.css': ['res/tmp/css/less.css']
-                }
-            },
             ng: {
-                files: {
-                    'res/dist/ng-modules/<%= pkg.name %>.min.css': ['res/src/ng-modules/*.css']
-                }
+                expand: true,
+                flatten: true,
+                src: 'res/src/ng-modules/*.css',
+                dest: 'res/dist/ng-modules/'
             }
         },
         concat: {
@@ -90,14 +87,14 @@ module.exports = function(grunt) {
             }
         },
         uglify: {
+            options: {
+                mangle: false
+            },
             production: {
-                options: {
-                    mangle: false
-                },
-                files: {
-                    'res/dist/js/application.js': resFiles.js,
-                    'res/dist/ng-modules/<%= pkg.name %>.min.js': resFiles.jsNg
-                }
+                expand: true,
+                flatten: true,
+                src: 'res/src/ng-modules/*.js',
+                dest: 'res/dist/ng-modules/'
             }
         },
 
@@ -122,11 +119,11 @@ module.exports = function(grunt) {
         },
         watch: {
             js: {
-                files: resFiles.js,
+                files: resFiles.jsNg,
                 tasks: ['js']
             },
             less: {
-                files:  resFiles.less,
+                files:  resFiles.lessNg,
                 tasks: ['css']
             },
             img: {
@@ -142,9 +139,9 @@ module.exports = function(grunt) {
     // Making grunt default to force in order not to break the project.
     grunt.option('force', true);
 
-    grunt.registerTask('css-theme', ['less', 'autoprefixer', 'csslint', 'cssmin:theme', 'cssmin:ng', 'concat:theme', 'clean:css']);
+    grunt.registerTask('css-theme', ['less', 'autoprefixer', 'csslint', 'cssmin:ng', 'concat:theme', 'clean:css']);
 
-    grunt.registerTask('css-plugin', ['less', 'autoprefixer', 'csslint', 'cssmin:plugin', 'cssmin:ng', 'clean:css']);
+    grunt.registerTask('css-plugin', ['less', 'autoprefixer', 'csslint', 'cssmin:ng', 'clean:css']);
 
     grunt.registerTask('css', isPlugin?['css-plugin']:['css-theme']);
 
