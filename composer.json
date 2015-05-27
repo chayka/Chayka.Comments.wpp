@@ -21,6 +21,7 @@
     "requireDev": {},
     "suggest": {
         "chayka/wp": "dev-master",
-        "chayka/core-wpp": "dev-master"
+        "chayka/core-wpp": "dev-master",
+        "chayka/email-wpp": "dev-master"
     }
 }

@@ -43,6 +43,11 @@
     "appAuthorUri": "http://anotherguru.me/",
     "appLicense": "proprietary",
     "ideaDeploymentServer": "WP Plugins",
-    "appClass": "Plugin"
+    "appClass": "Plugin",
+    "helpers": [
+      "email",
+      "nls",
+      "option"
+    ]
   }
 }
