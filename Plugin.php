@@ -13,6 +13,7 @@ class Plugin extends WP\Plugin{
     public static function init(){
         if(!static::$instance){
             static::$instance = $app = new self(__FILE__, array(
+	            'comment'
                 /* chayka: init-controllers */
             ));
             $app->dbUpdate(array());
@@ -60,8 +61,8 @@ class Plugin extends WP\Plugin{
         $this->setResSrcDir('src/');
         $this->setResDistDir('dist/');
 
-	    $this->registerNgScript('chayka-comments', 'ng-modules/chayka-comments.js', ['chayka-modals', 'chayka-ajax', 'chayka-spinners', 'chayka-forms']);
-		$this->registerStyle('chayka-comments', 'ng-modules/chayka-comments.css', ['chayka-modals', 'chayka-spinners', 'chayka-forms']);
+	    $this->registerNgScript('chayka-comments', 'ng-modules/chayka-comments.js', ['chayka-modals', 'chayka-ajax', 'chayka-spinners', 'chayka-forms', 'chayka-avatars', 'chayka-buttons', 'chayka-utils']);
+		$this->registerStyle('chayka-comments', 'ng-modules/chayka-comments.css', ['chayka-modals', 'chayka-spinners', 'chayka-forms', 'dashicons']);
 
 		/* chayka: registerResources */
     }

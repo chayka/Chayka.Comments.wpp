@@ -1,0 +1,466 @@
+
+.chayka-comments{
+    .comments-list{
+    }
+
+    .show_hidden_pane{
+        border-top: 1px gray dotted;
+        font-size: 12px;
+        color: cornflowerblue;
+        height: 20px;
+        padding: 1ex 0;
+
+        .link{
+            float: left;
+            cursor: pointer;
+        }
+
+        .shown_total{
+            float: right;
+        }
+    }
+
+}
+
+.chayka-comments-comment_item{
+    border-top: 1px gray dotted;
+    padding: 0.5em 0;
+    clear: both;
+
+    .user_details{
+        float: left;
+        min-height: 24px;
+        padding: 0;
+        box-sizing: border-box;
+
+        .user_id{
+            display: none;
+        }
+        img.avatar{
+            position: absolute;
+            width: 48px;
+            height: auto;
+            border: 1px solid #dddddd;
+            border-radius: 3px;
+        }
+        .name{
+            line-height: 24px;
+            display: block;
+            margin-left:64px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+    }
+
+    .chayka-spinner{
+        float: left;
+        font-size: 13px;
+        margin-left: 2em;
+        /*display: none;*/
+        //                background-size: 16px 16px;
+        //                background-position: 0 50%;
+        //                padding-left: 20px;
+        //                display: none;
+    }
+
+    .comment_date{
+        min-height: 24px;
+        line-height: 24px;
+        text-align: right;
+        font-size: 11px;
+        margin-left: 2em;
+        float: left;
+    }
+
+    .comment_voting{
+        min-height: 24px;
+        /*clear: both;*/
+        float: right;
+        max-width: 100px;
+        margin-left: 2em;
+        line-height: 24px;
+
+        /*position: absolute;*/
+        .comment_karma{
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .positive_karma{
+            color: #439c24;
+
+        }
+        .negative_karma{
+            color: #a52727;
+
+        }
+        .comment_karma_delta{
+            display: none;
+            border-radius: 2em;
+            color: white;
+            min-width: 2ex;
+            padding: 0 1ex;
+            /*text-align: center;*/
+            font-size: 12px;
+            /*vertical-align: middle;*/
+            &.positive{
+                display: inline-block;
+                background-color: #439c24;
+            }
+            &.negative{
+                display: inline-block;
+                background-color: #a52727;
+            }
+        }
+        .comment_vote_up{
+            display: inline-block;
+            cursor: pointer;
+            &.disabled{
+                opacity: .5;
+            }
+        }
+        .comment_vote_down{
+            display: inline-block;
+            cursor: pointer;
+            &.disabled{
+                opacity: .5;
+            }
+        }
+        .no_vote_up{
+            display: inline-block;
+            cursor: pointer;
+        }
+        .no_vote_down{
+            display: inline-block;
+            cursor: pointer;
+        }
+    }
+
+    .comment_content{
+        /*float: left;*/
+        clear: both;
+        font-size: 13px;
+        min-height: 33px;
+        padding-left: 64px;
+        margin-bottom: 24px;
+        /*margin-right: 120px;*/
+
+        .comment_reply_to{
+            float: left;
+            margin-right: 1ex;
+        }
+        .comment_message{
+            white-space: pre-wrap;
+            display: inline;
+        }
+        .comment_unfold{
+            display: inline;
+            cursor: pointer;
+            text-decoration: underline;
+            color: cornflowerblue;
+            white-space: nowrap;
+        }
+    }
+    .comment_status{
+        margin-top: -24px;
+        height: 24px;
+        float: left;
+        font-size: 11px;
+        font-style: italic;
+    }
+    .comment_tools{
+        margin-top: -24px;
+        height: 24px;
+        float: right;
+        margin-right: 5px;
+        display: none;
+        font-size: 11px;
+
+        .tool_link{
+            cursor: pointer;
+            margin-left: 1ex;
+        }
+
+        .tool_link_reply_to{
+            color: cornflowerblue;
+        }
+        .tool_link_edit{
+            color: dodgerblue;
+        }
+        .tool_link_delete{
+            color: maroon;
+        }
+
+    }
+
+    &:hover{
+        .comment_tools{
+            display: block;
+        }
+    }
+    &.negative_karma{
+        .comment_message{
+            color: #aaaaaa;
+        }
+    }
+
+    &.reply_to{
+        background-color: #fafafa;
+    }
+
+    &.comment_refreshed{
+        background-color: antiquewhite;;
+    }
+}
+
+
+
+
+
+.chayka-comments-comment_editor{
+    width: 100%;
+    border-top: 1px gray dotted;
+    padding: 0.5em 0;
+    clear: both;
+    margin: 0;
+    /*        margin: 0.5em 0;*/
+
+    .flex_box{
+        display: flex;
+        flex-flow: row nowrap;
+    }
+
+    .form_field{
+//        float: left;
+        margin-right: 1em;
+        margin-bottom: 10px;
+
+        label{
+            display: none;
+        }
+
+        .input{
+            input, textarea{
+                font-size: 13px;
+                border-color: #ccc;
+                padding: 2px;
+                margin-bottom: 0;
+
+            }
+            .placeholder{
+                color: #888888;
+            }
+        }
+        .message{
+            clear: both;
+            text-align: right;
+            font-size: 12px;
+            font-style: italic;
+            color: gray;
+            height: 14px;
+        }
+
+        .message.error{
+            color: #CD0A0A;
+        }
+    }
+
+
+    .content_block{
+        flex: 1 1;
+//        width: 100%;
+//        float: left;
+        box-sizing: border-box;
+        display: flex;
+        flex-flow: column nowrap;
+
+        .field_content{
+            flex: 1 1 100%;
+            display: flex;
+            flex-flow: column nowrap;
+            margin-right: 0;
+
+            label{
+                display: none;
+            }
+
+            .input{
+                flex: 1 1;
+                textarea{
+                    box-sizing: border-box;
+                    width: 100%;
+                    min-height: 100%;
+                }
+
+    //            textarea.progress{
+    //                background-color: inherit;
+    //                background-repeat: no-repeat;
+    //                background-image: url('../img/spinner32x32.gif');
+    //                background-size: 15px 15px;
+    //                background-position: 99% 4px;
+    //            }
+    //            .placeholder{
+    //                color: #888888;
+    //            }
+            }
+            .message{
+                flex: 0 0 14px;
+//                clear: both;
+                text-align: right;
+                font-size: 12px;
+                font-style: italic;
+                color: gray;
+                height: 14px;
+                & > p{
+                    margin: 0;
+                    padding: 0;
+                }
+            }
+
+            .message.error{
+                color: #CD0A0A;
+            }
+        }
+    }
+
+    .non_authorized_block{
+        flex: 0 0 230px;
+//        position: absolute;
+//        width: 230px;
+    }
+
+    .user_authorized_block{
+        flex: 0 0 64px;
+//        position: absolute;
+//        width: 64px;
+        img.avatar{
+            position: absolute;
+            width: 48px;
+            height: auto;
+            border: 1px solid #dddddd;
+            border-radius: 3px;
+
+        }
+    }
+
+    .form_box-buttons{
+//        float: right;
+        box-sizing: border-box;
+        text-align: right;
+        /*width: 100px;*/
+
+        .required_fields_note{
+            display: none;
+            float: left;
+            span{
+                color: red;
+                font-weight: bold;
+            }
+        }
+
+        button{
+            margin-bottom: 4px;
+            width: 100px;
+
+        }
+        .btn_save{
+            /*width: 100px;*/
+        }
+        .btn_cancel{
+            /*width: 100px;*/
+//            display: none;
+        }
+    }
+
+    &.non_authorized{ /*editor*/
+        padding-top: 1em;
+
+        .auth_invitation{
+            text-align: right;
+        }
+
+        .non_authorized_block{
+//            display: block;
+
+            .form_field{
+                width:220px;
+
+                .form_field-tips{
+                    margin-right: 10px;
+                }
+
+            }
+            div[data-check-required]{
+                >.input{
+                    display: inline;
+                }
+                >.input::after{
+                    content: '*';
+                    color: red;
+                    font-weight: bold;
+                    position: absolute;
+                    margin-left: 3px;
+                    margin-top: -0.5ex;
+                    display: inline-block;
+                    float: left;
+                    width: -1px;
+                    overflow: visible;
+                }
+            }
+        }
+
+        .content_block{
+//            padding-left: 230px;
+            .input{
+                textarea{
+//                    min-height: 126px;
+                }
+            }
+
+        }
+        .form_box-buttons{
+            /*padding-left: 230px;*/
+            width: 100%;
+
+            .required_fields_note{
+                display: block;
+            }
+
+        }
+    }
+
+    &.user_authorized{ /*editor*/
+        /*padding-top: 1em;*/
+
+        .auth_invitation{
+//            display: none;
+        }
+
+        .user_authorized_block{
+//            display: block;
+        }
+
+        .content_block{
+//            padding-left: 64px;
+//            margin-right: 115px;
+            .input{
+                textarea{
+                    min-height: 50px;
+                    height: 50px;
+                }
+            }
+
+        }
+        .form_box-buttons{
+            /*padding-left: 230px;*/
+            width: 100%;
+
+        }
+    }
+
+}
+
+
+
+
+

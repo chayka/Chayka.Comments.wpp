@@ -1,5 +1,37 @@
-Comments<?php
+<?php
 /**
  * @var \Chayka\MVC\View $this
  */
-\Chayka\WP\Helpers\AngularHelper::enqueueScriptStyle('chayka-comments');
+$this->declareVars([
+	'order' => 'asc'
+]);
+
+$direct = $this->order == 'asc';
+?>
+<div class="chayka-comments" >
+	<?php if ( post_password_required() ) : ?>
+	<p class="nopassword"><?php $this->__( 'This post is password protected. Enter the password to view any comments.'); ?></p>
+	<?php elseif ( false && ! comments_open() && post_type_supports( get_post_type(), 'comments' ) ) :?>
+	<p class="nocomments"><?php $this->__( 'Comments are closed.'); ?></p>
+	<?php else: \Chayka\WP\Helpers\AngularHelper::enqueueScriptStyle('chayka-comments');?>
+		<div data-ng-controller="comments" data-post-id="<?php the_ID();?>" data-order="<?php echo $this->order;?>" data-ng-cloak>
+			<?php if($direct):?>
+				<div class="show_hidden_pane" data-ng-hide="total <= comments.length"><span class="link" data-ng-click="showMore(50)">{{'Show older comments...'|translate}}</span><span class="shown_total">{{comments.length}} {{'of'|translate}} {{total}} {{'shown' | translate}}</span></div>
+			<?php else: ?>
+				<div data-comment-editor="addEditor" data-post-id="postId"></div>
+			<?php endif;?>
+			<div class="comments-list" data-ng-show="!!comments.length">
+				<div data-ng-repeat="comment in comments track by comment.id" data-comment-item="comment">
+				</div>
+			</div>
+			<?php if(!$direct):?>
+				<div class="show_hidden_pane" data-ng-hide="total <= comments.length"><span class="link" data-ng-click="showMore(50)">{{'Show older comments...'|translate}}</span><span class="shown_total">{{comments.length}} {{'of'|translate}} {{total}} {{'shown' | translate}}</span></div>
+			<?php else: ?>
+				<div data-comment-editor="editors.static" data-post-id="postId"></div>
+			<?php endif;?>
+			<div data-modal="popup">
+				<div data-comment-editor="editors.dynamic" data-post-id="postId"></div>
+			</div>
+		</div>
+	<?php endif;?>
+</div>

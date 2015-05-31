@@ -48,6 +48,9 @@
       "email",
       "nls",
       "option"
-    ]
+    ],
+    "controllers": {
+      "Comment": []
+    }
   }
 }
