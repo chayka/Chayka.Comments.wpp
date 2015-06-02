@@ -4,11 +4,11 @@
     }
 
     .show_hidden_pane{
-        border-top: 1px gray dotted;
+//        border-top: 1px gray dotted;
         font-size: 12px;
         color: cornflowerblue;
         height: 20px;
-        padding: 1ex 0;
+        margin: 1ex 0;
 
         .link{
             float: left;
@@ -23,8 +23,8 @@
 }
 
 .chayka-comments-comment_item{
-    border-top: 1px gray dotted;
-    padding: 0.5em 0;
+//    border-top: 1px gray dotted;
+//    padding: 0.5em 0;
     clear: both;
 
     .user_details{
@@ -41,7 +41,7 @@
             width: 48px;
             height: auto;
             border: 1px solid #dddddd;
-            border-radius: 3px;
+//            border-radius: 3px;
         }
         .name{
             line-height: 24px;
@@ -56,11 +56,9 @@
         float: left;
         font-size: 13px;
         margin-left: 2em;
-        /*display: none;*/
-        //                background-size: 16px 16px;
-        //                background-position: 0 50%;
-        //                padding-left: 20px;
-        //                display: none;
+        padding-left: 30px;
+        background-size: 20px;
+        background-position: left center;
     }
 
     .comment_date{
@@ -77,26 +75,26 @@
         /*clear: both;*/
         float: right;
         max-width: 100px;
-        margin-left: 2em;
+        margin-left: 1em;
         line-height: 24px;
 
         /*position: absolute;*/
         .comment_karma{
+            vertical-align: top;
             display: inline-block;
             font-size: 12px;
             font-weight: bold;
-        }
-        .positive_karma{
-            color: #439c24;
-
-        }
-        .negative_karma{
-            color: #a52727;
-
+            &.positive{
+                color: #439c24;
+            }
+            &.negative{
+                color: #a52727;
+            }
         }
         .comment_karma_delta{
+            vertical-align: top;
             display: none;
-            border-radius: 2em;
+            border-radius: 3em;
             color: white;
             min-width: 2ex;
             padding: 0 1ex;
@@ -112,27 +110,20 @@
                 background-color: #a52727;
             }
         }
-        .comment_vote_up{
+        .comment_vote_arrow{
+            min-height: 24px;
+            line-height: 24px;
             display: inline-block;
             cursor: pointer;
             &.disabled{
                 opacity: .5;
             }
-        }
-        .comment_vote_down{
-            display: inline-block;
-            cursor: pointer;
-            &.disabled{
-                opacity: .5;
+            >.dashicons-before::before{
+                min-height: 24px;
+                line-height: 24px;
+                vertical-align: top;
+                font-size: 23px;
             }
-        }
-        .no_vote_up{
-            display: inline-block;
-            cursor: pointer;
-        }
-        .no_vote_down{
-            display: inline-block;
-            cursor: pointer;
         }
     }
 
@@ -179,16 +170,19 @@
         .tool_link{
             cursor: pointer;
             margin-left: 1ex;
+            .dashicons-before::before{
+                font-size: 17px;
+            }
         }
 
         .tool_link_reply_to{
-            color: cornflowerblue;
+//            color: cornflowerblue;
         }
         .tool_link_edit{
-            color: dodgerblue;
+//            color: dodgerblue;
         }
         .tool_link_delete{
-            color: maroon;
+//            color: maroon;
         }
 
     }
@@ -219,7 +213,7 @@
 
 .chayka-comments-comment_editor{
     width: 100%;
-    border-top: 1px gray dotted;
+//    border-top: 1px gray dotted;
     padding: 0.5em 0;
     clear: both;
     margin: 0;
@@ -338,7 +332,7 @@
             width: 48px;
             height: auto;
             border: 1px solid #dddddd;
-            border-radius: 3px;
+//            border-radius: 3px;
 
         }
     }

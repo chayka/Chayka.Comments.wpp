@@ -30,12 +30,11 @@ class CommentController extends Controller{
 		if(!AclHelper::isAdmin()){
 			$params['status'] = 'approve';
 		}
-		$comments = CommentQuery::query()->setVars($params)->select();
+		$query = CommentQuery::query()->setVars($params);
+		$comments = $query->select();
 		$total = count($comments);
 		if(isset($params['number'])){
-			unset($params['number']);
-			$params['count']=true;
-			$total = get_comments($params);
+			$total = $query->selectCount();
 		}
 		$users = array();
 		foreach($comments as $comment){
@@ -76,6 +75,12 @@ class CommentController extends Controller{
 		AclHelper::apiPermissionRequired('moderate_comments');
 		$commentId = InputHelper::getParam('id', 0);
 		$state = InputHelper::getParam('state', 0);
+		if($state != 1){
+			$children = CommentModel::query()->parent($commentId)->selectCount();
+			if($children){
+				JsonHelper::respondError('Comment already has replies');
+			}
+		}
 		$comment = CommentModel::selectById($commentId, false);
 		$comment->setIsApproved($state);
 		$comment->update();

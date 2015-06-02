@@ -1,9 +1,8 @@
 .chayka-comments .show_hidden_pane {
-  border-top: 1px gray dotted;
   font-size: 12px;
   color: cornflowerblue;
   height: 20px;
-  padding: 1ex 0;
+  margin: 1ex 0;
 }
 .chayka-comments .show_hidden_pane .link {
   float: left;
@@ -13,8 +12,6 @@
   float: right;
 }
 .chayka-comments-comment_item {
-  border-top: 1px gray dotted;
-  padding: 0.5em 0;
   clear: both;
 }
 .chayka-comments-comment_item .user_details {
@@ -31,7 +28,6 @@
   width: 48px;
   height: auto;
   border: 1px solid #dddddd;
-  border-radius: 3px;
 }
 .chayka-comments-comment_item .user_details .name {
   line-height: 24px;
@@ -44,7 +40,9 @@
   float: left;
   font-size: 13px;
   margin-left: 2em;
-  /*display: none;*/
+  padding-left: 30px;
+  background-size: 20px;
+  background-position: left center;
 }
 .chayka-comments-comment_item .comment_date {
   min-height: 24px;
@@ -59,24 +57,26 @@
   /*clear: both;*/
   float: right;
   max-width: 100px;
-  margin-left: 2em;
+  margin-left: 1em;
   line-height: 24px;
   /*position: absolute;*/
 }
 .chayka-comments-comment_item .comment_voting .comment_karma {
+  vertical-align: top;
   display: inline-block;
   font-size: 12px;
   font-weight: bold;
 }
-.chayka-comments-comment_item .comment_voting .positive_karma {
+.chayka-comments-comment_item .comment_voting .comment_karma.positive {
   color: #439c24;
 }
-.chayka-comments-comment_item .comment_voting .negative_karma {
+.chayka-comments-comment_item .comment_voting .comment_karma.negative {
   color: #a52727;
 }
 .chayka-comments-comment_item .comment_voting .comment_karma_delta {
+  vertical-align: top;
   display: none;
-  border-radius: 2em;
+  border-radius: 3em;
   color: white;
   min-width: 2ex;
   padding: 0 1ex;
@@ -92,27 +92,20 @@
   display: inline-block;
   background-color: #a52727;
 }
-.chayka-comments-comment_item .comment_voting .comment_vote_up {
+.chayka-comments-comment_item .comment_voting .comment_vote_arrow {
+  min-height: 24px;
+  line-height: 24px;
   display: inline-block;
   cursor: pointer;
 }
-.chayka-comments-comment_item .comment_voting .comment_vote_up.disabled {
+.chayka-comments-comment_item .comment_voting .comment_vote_arrow.disabled {
   opacity: .5;
 }
-.chayka-comments-comment_item .comment_voting .comment_vote_down {
-  display: inline-block;
-  cursor: pointer;
-}
-.chayka-comments-comment_item .comment_voting .comment_vote_down.disabled {
-  opacity: .5;
-}
-.chayka-comments-comment_item .comment_voting .no_vote_up {
-  display: inline-block;
-  cursor: pointer;
-}
-.chayka-comments-comment_item .comment_voting .no_vote_down {
-  display: inline-block;
-  cursor: pointer;
+.chayka-comments-comment_item .comment_voting .comment_vote_arrow > .dashicons-before::before {
+  min-height: 24px;
+  line-height: 24px;
+  vertical-align: top;
+  font-size: 23px;
 }
 .chayka-comments-comment_item .comment_content {
   /*float: left;*/
@@ -157,14 +150,8 @@
   cursor: pointer;
   margin-left: 1ex;
 }
-.chayka-comments-comment_item .comment_tools .tool_link_reply_to {
-  color: cornflowerblue;
-}
-.chayka-comments-comment_item .comment_tools .tool_link_edit {
-  color: dodgerblue;
-}
-.chayka-comments-comment_item .comment_tools .tool_link_delete {
-  color: maroon;
+.chayka-comments-comment_item .comment_tools .tool_link .dashicons-before::before {
+  font-size: 17px;
 }
 .chayka-comments-comment_item:hover .comment_tools {
   display: block;
@@ -180,7 +167,6 @@
 }
 .chayka-comments-comment_editor {
   width: 100%;
-  border-top: 1px gray dotted;
   padding: 0.5em 0;
   clear: both;
   margin: 0;
@@ -291,7 +277,6 @@
   width: 48px;
   height: auto;
   border: 1px solid #dddddd;
-  border-radius: 3px;
 }
 .chayka-comments-comment_editor .form_box-buttons {
   box-sizing: border-box;
