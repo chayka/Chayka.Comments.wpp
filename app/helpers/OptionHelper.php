@@ -5,6 +5,14 @@ namespace Chayka\Comments;
 use Chayka\WP\Helpers;
 
 class OptionHelper extends Helpers\OptionHelper{
-	// Leave it empty it still does the trick. 
-	// App namespace is the thing that matters.
+
+	/**
+	 * Get option prefix.
+	 * Since we try to work with standard WP settings, we don't need no prefix.
+	 *
+	 * @return string
+	 */
+	public static function getPrefix(){
+		return '';
+	}
 } 

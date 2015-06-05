@@ -1,14 +1,38 @@
+@media_mobile: ~'(max-width: 500px)';
+
+.chayka-comments-width{
+    width: 600px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chayka-comments-link{
+    color: #888;
+    cursor: pointer;
+}
 
 .chayka-comments{
+
+    .no_comments{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .no_password{
+        text-align: center;
+    }
+
     .comments-list{
     }
 
     .show_hidden_pane{
 //        border-top: 1px gray dotted;
         font-size: 12px;
-        color: cornflowerblue;
+//        color: #888;
         height: 20px;
-        margin: 1ex 0;
+        margin-top: 1ex;
+        margin-bottom: 1ex;
 
         .link{
             float: left;
@@ -26,6 +50,7 @@
 //    border-top: 1px gray dotted;
 //    padding: 0.5em 0;
     clear: both;
+    position: relative;
 
     .user_details{
         float: left;
@@ -49,16 +74,35 @@
             margin-left:64px;
             font-size: 13px;
             font-weight: bold;
+            @media @media_mobile{
+                max-width: 115px;
+                padding-top: 4px;
+                line-height: 16px;
+                padding-bottom: 4px;
+            }
         }
     }
 
     .chayka-spinner{
-        float: left;
+        float: right;
         font-size: 13px;
         margin-left: 2em;
         padding-left: 30px;
         background-size: 20px;
         background-position: left center;
+        @media @media_mobile {
+            background-size: 16px;
+            overflow: hidden;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            padding-left: 16px;
+            position: absolute;
+            top: 20px;
+            right: 0;
+            z-index: 1;
+//            float: left;
+        }
     }
 
     .comment_date{
@@ -68,18 +112,27 @@
         font-size: 11px;
         margin-left: 2em;
         float: left;
+        @media @media_mobile{
+            display: none;
+        }
     }
 
     .comment_voting{
         min-height: 24px;
-        /*clear: both;*/
         float: right;
         max-width: 100px;
         margin-left: 1em;
         line-height: 24px;
+        @media @media_mobile {
+            margin-left: 0;
+        }
+//        flex-flow: column;
+//        align-items: center;
 
         /*position: absolute;*/
         .comment_karma{
+//            flex: 0;
+//            order: 2;
             vertical-align: top;
             display: inline-block;
             font-size: 12px;
@@ -92,6 +145,8 @@
             }
         }
         .comment_karma_delta{
+//            flex: 0;
+//            order: 3;
             vertical-align: top;
             display: none;
             border-radius: 3em;
@@ -111,10 +166,17 @@
             }
         }
         .comment_vote_arrow{
+//            flex: 0;
             min-height: 24px;
             line-height: 24px;
             display: inline-block;
             cursor: pointer;
+            &.vote_up{
+                order: 1;
+            }
+            &.vote_down{
+                order: 2;
+            }
             &.disabled{
                 opacity: .5;
             }
@@ -133,12 +195,16 @@
         font-size: 13px;
         min-height: 33px;
         padding-left: 64px;
-        margin-bottom: 24px;
+        padding-bottom: 30px;
         /*margin-right: 120px;*/
+        @media @media_mobile {
+            padding-bottom: 6px;
+        }
 
         .comment_reply_to{
             float: left;
             margin-right: 1ex;
+            cursor: pointer;
         }
         .comment_message{
             white-space: pre-wrap;
@@ -151,6 +217,12 @@
             color: cornflowerblue;
             white-space: nowrap;
         }
+        .comment_total_replies{
+            cursor: pointer;
+            margin-top: 5px;
+            font-size: 90%;
+//            color: #888;
+        }
     }
     .comment_status{
         margin-top: -24px;
@@ -158,14 +230,24 @@
         float: left;
         font-size: 11px;
         font-style: italic;
+        @media @media_mobile{
+            margin-top: 0;
+            float: right;
+        }
     }
     .comment_tools{
         margin-top: -24px;
         height: 24px;
         float: right;
-        margin-right: 5px;
+//        margin-right: 5px;
         display: none;
         font-size: 11px;
+        opacity: .5;
+
+        @media @media_mobile{
+            display: block;
+            margin-top: 0;
+        }
 
         .tool_link{
             cursor: pointer;
@@ -212,18 +294,22 @@
 
 
 .chayka-comments-comment_editor{
-    width: 100%;
-//    border-top: 1px gray dotted;
     padding: 0.5em 0;
+    margin-bottom: 2em;
     clear: both;
-    margin: 0;
-    /*        margin: 0.5em 0;*/
 
     .flex_box{
         display: flex;
         flex-flow: row nowrap;
     }
 
+    .reply_to_box{
+        &>h3{
+            font-size: 16px;
+            margin-top: 0;
+        }
+
+    }
     .form_field{
 //        float: left;
         margin-right: 1em;
@@ -280,22 +366,14 @@
 
             .input{
                 flex: 1 1;
+//                flex-flow: column;
                 textarea{
+//                    flex: 1 1;
                     box-sizing: border-box;
                     width: 100%;
-                    min-height: 100%;
+                    min-height: 200px;
+//                    min-height: 100%;
                 }
-
-    //            textarea.progress{
-    //                background-color: inherit;
-    //                background-repeat: no-repeat;
-    //                background-image: url('../img/spinner32x32.gif');
-    //                background-size: 15px 15px;
-    //                background-position: 99% 4px;
-    //            }
-    //            .placeholder{
-    //                color: #888888;
-    //            }
             }
             .message{
                 flex: 0 0 14px;
@@ -353,16 +431,11 @@
         }
 
         button{
-            margin-bottom: 4px;
-            width: 100px;
 
         }
         .btn_save{
-            /*width: 100px;*/
         }
         .btn_cancel{
-            /*width: 100px;*/
-//            display: none;
         }
     }
 
@@ -377,38 +450,59 @@
 //            display: block;
 
             .form_field{
-                width:220px;
+                width:210px;
 
                 .form_field-tips{
                     margin-right: 10px;
                 }
 
             }
-            div[data-check-required]{
+            &.require_name_email > div[data-check-required]{
                 >.input{
-                    display: inline;
+                    position: relative;
+                    input {
+                    }
                 }
                 >.input::after{
                     content: '*';
                     color: red;
                     font-weight: bold;
                     position: absolute;
-                    margin-left: 3px;
-                    margin-top: -0.5ex;
+                    right: -12px;
+                    top: 0;
                     display: inline-block;
-                    float: left;
-                    width: -1px;
                     overflow: visible;
                 }
             }
         }
 
         .content_block{
-//            padding-left: 230px;
             .input{
                 textarea{
-//                    min-height: 126px;
                 }
+            }
+
+        }
+
+        @media @media_mobile{
+            .flex_box{
+                flex-flow: column;
+            }
+            .non_authorized_block{
+                order: 2;
+                flex: 1 1;
+                .form_field{
+                    width: 100%;
+                }
+            }
+            .content_block{
+                order: 1;
+                .input{
+                    textarea{
+                        min-height: 100px;
+                    }
+                }
+
             }
 
         }
@@ -423,20 +517,15 @@
         }
     }
 
-    &.user_authorized{ /*editor*/
-        /*padding-top: 1em;*/
+    &.user_authorized{
 
         .auth_invitation{
-//            display: none;
         }
 
         .user_authorized_block{
-//            display: block;
         }
 
         .content_block{
-//            padding-left: 64px;
-//            margin-right: 115px;
             .input{
                 textarea{
                     min-height: 50px;
@@ -452,6 +541,18 @@
         }
     }
 
+}
+
+.chayka-comments-dialog{
+    & > h3{
+        font-size: 16px;
+        margin-top: 0;
+    }
+    & > .replies_list{
+//        max-height: 300px;
+//        overflow-y: auto;
+        padding-left: 20px;
+    }
 }
 
 

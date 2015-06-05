@@ -78,6 +78,8 @@ class Plugin extends WP\Plugin{
      * Registering console pages
      */
     public function registerConsolePages(){
+        $this->addConsoleSubPage('edit-comments.php', 'Comments', 'update_core', 'comments', '/admin/comments');
+
         /* chayka: registerConsolePages */
     }
     

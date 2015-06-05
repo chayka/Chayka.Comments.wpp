@@ -50,7 +50,13 @@
       "option"
     ],
     "controllers": {
-      "Comment": []
-    }
+      "Comment": [],
+      "Admin": [
+        "comments"
+      ]
+    },
+    "consolePages": [
+      "comments"
+    ]
   }
 }

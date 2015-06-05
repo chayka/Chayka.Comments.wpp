@@ -1,1 +1,1 @@
-<?php echo \Chayka\Comments\Plugin::getView()->render('comments.phtml');;
+<?php echo \Chayka\Comments\Plugin::getView()->render('comment/comments.phtml');;

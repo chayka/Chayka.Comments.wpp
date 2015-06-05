@@ -25,7 +25,8 @@ class CommentController extends Controller{
 			'orderby'=>true,
 			'order'=>true,
 			'number'=>true,
-			'include_unapproved'=>true
+			'include_unapproved'=>true,
+			'parent'=>true,
 		));
 		if(!AclHelper::isAdmin()){
 			$params['status'] = 'approve';

@@ -81,23 +81,30 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
              * Index comment for it can be found by id
              *
              * @param comment
+             * @param [indexPostId]
+             * @param [indexParentId]
              */
-            indexComment: function(comment){
+            indexComment: function(comment, indexPostId, indexParentId){
                 if(commentsById[comment.id]){
                     angular.extend(commentsById[comment.id], comment);
                 }else{
                     commentsById[comment.id] = comment;
-                    if(commentsByPostId[comment.comment_post_ID]){
+                    if(indexPostId && commentsByPostId[comment.comment_post_ID]){
                         commentsByPostId[comment.comment_post_ID].push(comment);
                     }
                     var parentId = comment.comment_parent;
-                    if(parentId){
+                    if(indexParentId && parentId){
                         if(!commentsByParentId[parentId]){
                             commentsByParentId[parentId] = [];
                         }
                         commentsByParentId[parentId].push(comment);
+                        var parent = commentsById[parentId];
+                        if(parent){
+                            parent.total_replies = commentsByParentId[parentId].length;
+                        }
                     }
                 }
+                comment.total_replies = commentsByParentId[comment.id] ? commentsByParentId[comment.id].length : 0;
             },
 
             /**
@@ -110,7 +117,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                  * Moving children one level up (that what wordpress does on backend)
                  */
                 for(var id in commentsById){
-                    if(commentsById.hasOwnProperty(id) && commentsById[id].comment_parent === comment.id){
+                    if(commentsById.hasOwnProperty(id) && commentsById[id] && commentsById[id].comment_parent === comment.id){
                         commentsById[id].comment_parent = comment.comment_parent;
                     }
                 }
@@ -120,7 +127,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                 var index;
                 if(commentsByPostId[comment.comment_post_ID]) {
                     index = commentsByPostId[comment.comment_post_ID].indexOf(comment);
-                    if (index > 0) {
+                    if (index >= 0) {
                         commentsByPostId[comment.comment_post_ID].splice(index, 1);
                     }
                 }
@@ -130,7 +137,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                 */
                 if(comment.comment_parent && commentsByParentId[comment.comment_parent]) {
                     index = commentsByParentId[comment.comment_parent].indexOf(comment);
-                    if (index > 0) {
+                    if (index >= 0) {
                         commentsByParentId[comment.comment_parent].splice(index, 1);
                     }
                 }
@@ -186,7 +193,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                         success: function(data){
                             var items = data.payload.items;
                             items.forEach(function(item){
-                                wpComments.indexComment(item);
+                                wpComments.indexComment(item, false, false);
                                 var callbacks = requestQueue[item.id];
                                 if(callbacks && callbacks.length) {
                                     for (var i = 0; i < callbacks.length; i++) {
@@ -210,10 +217,6 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
              */
             getCommentsByPostId: function(postId, number, order, callback, refresh){
                 if(!commentsByPostId[postId]){
-                    //if(callback){
-                    //    callback(commentsByPostId[postId]);
-                    //}
-                //}else{
                     commentsByPostId[postId] = [];
                 }
                 if(commentsByPostId[postId].length < number || refresh) {
@@ -225,16 +228,18 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                             status: wpComments.isCurrentUserAdmin()?'all':'approve',
                             include_unapproved: wpComments.isCurrentUserLoggedIn()?[wpComments.getCurrentUser().id]:[],
                             orderby: 'comment_ID',
-                            order: order.toLowerCase() === 'asc'?'DESC':'ASC'// yeah, that's correct, and reverse upon return
+                            order: 'DESC'
                         },
                         {
                             spinnerMessage: 'Loading comments...',
                             errorMessage: 'Failed to load comments',
                             success: function (data) {
                                 var items = data.payload.comments;
-                                items.reverse();
+                                if(order.toLowerCase() === 'asc') {
+                                    items.reverse();
+                                }
                                 items.forEach(function (item) {
-                                    wpComments.indexComment(item);
+                                    wpComments.indexComment(item, true, true);
                                 });
                                 if(callback){
                                     callback(items, parseInt(data.payload.total));
@@ -255,19 +260,18 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             getCommentsByParentId: function(parentId, callback, refresh){
                 var parentComment = commentsById[parentId];
                 if(parentComment){
-                    var needLoad = refresh;
                     var postComments = commentsByPostId[parentComment.comment_post_ID];
                     var minId = 0;
                     if(postComments && postComments.length){
                         minId = Math.min(postComments[0].id, postComments[postComments.length - 1].id);
                         if(parentId < minId){
-                            needLoad = true;
+                            refresh = true;
                         }
                     }
                     if(!commentsByParentId[parentId]){
                         commentsByParentId[parentId]=[];
                     }
-                    if(!needLoad){
+                    if(!refresh){
                         callback(commentsByParentId[parentId]);
                     }else{
                         ajax.post(
@@ -275,20 +279,20 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                             {
                                 post_id: parentId,
                                 status: wpComments.isCurrentUserAdmin()?'all':'approve',
+                                parent: parentId,
                                 include_unapproved: wpComments.isCurrentUserLoggedIn()?[wpComments.getCurrentUser().id]:[],
                                 orderby: 'comment_ID',
                                 order: 'ASC'                            },
                             {
-                                spinnerMessage: 'Loading comments...',
-                                errorMessage: 'Failed to load comments',
+                                spinnerMessage: 'Loading replies...',
+                                errorMessage: 'Failed to load replies',
                                 success: function (data) {
                                     var items = data.payload.comments;
-                                    items.reverse();
                                     items.forEach(function (item) {
-                                        wpComments.indexComment(item);
+                                        wpComments.indexComment(item, false, true);
                                     });
                                     if(callback){
-                                        callback(items, parseInt(data.payload.total));
+                                        callback(items);
                                     }
                                 }
                             }
@@ -297,15 +301,33 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                     }
                 }
 
+            },
+
+            /**
+             * Flush all caches
+             */
+            flush: function(){
+                commentsById = {};
+                commentsByParentId = {};
+                commentsByPostId = {};
             }
 
         };
 
         return wpComments;
     }])
-    .controller('comments', ['$scope', '$element', '$translate', 'ajax', 'wpComments', function($scope, $element, $translate, ajax, wpComments){
-        $scope.postId = parseInt($element.attr('post-id') || $element.attr('data-post-id') || $element.data('post-id'));
-        $scope.order = $element.attr('order') || $element.attr('data-order') || $element.data('order') || 'asc';
+    .controller('comments', ['$scope', '$element', '$translate', 'ajax', 'utils', 'wpComments', function($scope, $element, $translate, ajax, utils, wpComments){
+
+        var getVar = function(name, defaultValue){
+            return utils.getHtmlParam($element, name, defaultValue);
+        };
+
+        $scope.postId = parseInt(getVar('post-id', 0));
+        $scope.order = getVar('order', 'asc');
+        $scope.perPage = parseInt(getVar('per-page', 50));
+        $scope.requireNameEmail = !!getVar('require-name-email', true);
+        $scope.requireAuth = !!getVar('require-auth', false);
+        $scope.readOnly = !!getVar('read-only', false);
 
         $scope.comments = [];
         $scope.commentsById = {};
@@ -315,6 +337,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
         $scope.dialogPopup = null;
 
         $scope.dialog = {
+            mode: 'reply', // 'reply'|'replies'
             parentComment: wpComments.getEmptyComment($scope.postId),
             replies: []
         };
@@ -324,14 +347,14 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             'dynamic': null
         };
 
-        $scope.orderBy = function(){
-            return $scope.order === 'asc'? '+id':'-id';
-        };
-
-        $scope.limitTo = function(){
-            return $scope.order === 'asc'? -$scope.shown:$scope.shown;
-        };
-
+        //$scope.orderBy = function(){
+        //    return $scope.order === 'asc'? '+id':'-id';
+        //};
+        //
+        //$scope.limitTo = function(){
+        //    return $scope.order === 'asc'? -$scope.shown:$scope.shown;
+        //};
+        //
         /**
          * Set comments and create hash map by id
          * @param {Array} comments
@@ -347,6 +370,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             }
             $scope.total = total || comments.length;
         };
+
 
         /**
          * Index comment for it can be found by id
@@ -365,7 +389,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                 }
             }
             $scope.total += 1;
-            wpComments.indexComment(comment);
+            wpComments.indexComment(comment, true, true);
         };
 
         $scope.onCommentPosted = function($event, comment){
@@ -377,21 +401,22 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
         $scope.$on('Chayka.Comments.commentCreated', $scope.onCommentPosted);
 
         $scope.$on('Chayka.Comments.commentDeleted', function($event, comment){
-            wpComments.removeComment(comment);
             var index = $scope.comments.indexOf(comment);
-            if(index > 0){
+            if(index >= 0){
                 $scope.comments.splice(index, 1);
             }
             $scope.total -= 1;
         });
 
         $scope.$on('Chayka.Comments.editComment', function($event, comment){
+            $scope.dialogPopup.hide();
             $scope.editors.dynamic.editComment(comment);
             $scope.editorPopup.setTitle(parseInt(comment.comment_parent)?'Edit reply':'Edit comment');
             $scope.editorPopup.show();
         });
 
         $scope.$on('Chayka.Comments.replyToComment', function($event, comment){
+            $scope.dialogPopup.hide();
             $scope.editors.dynamic.replyToComment(comment);
             $scope.editorPopup.setTitle('Reply to comment');
             $scope.editorPopup.show();
@@ -416,22 +441,40 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
 
         $scope.$on('Chayka.Comments.dialogReplyTo', function($event, replyComment){
             wpComments.getCommentById(replyComment.comment_parent, function(parentComment){
+                $scope.editorPopup.hide();
                 $scope.dialog.replies = [replyComment];
                 $scope.dialog.parentComment = parentComment;
+                $scope.dialog.mode = 'reply';
                 $scope.dialogPopup.setTitle('Reply to comment');
                 $scope.dialogPopup.show();
             });
         });
 
         $scope.$on('Chayka.Comments.dialogRepliesTo', function($event, parentComment){
-            $scope.dialog.parentComment = parentComment;
+            wpComments.getCommentsByParentId(parentComment.id, function(replies){
+                $scope.editorPopup.hide();
+                $scope.dialog.parentComment = parentComment;
+                $scope.dialog.replies = replies;
+                $scope.dialog.mode = 'replies';
+                $scope.dialogPopup.setTitle('Replies to comment');
+                $scope.dialogPopup.show();
+            });
         });
 
         $scope.closeDialog = function(){
             $scope.dialogPopup.hide();
         };
 
-        $scope.loadComments(10);
+        var preload = getVar('import');
+        if(preload){
+            var preloadContainer = utils.getItem(window, preload);
+            (preloadContainer.comments || []).forEach(function(comment){
+                wpComments.indexComment(comment, true, true);
+            });
+            $scope.setComments(preloadContainer.comments, preloadContainer.total);
+        }else{
+            $scope.loadComments($scope.perPage);
+        }
     }])
     .directive('commentItem', ['$translate', 'avatars', 'utils', 'ajax', 'modals', 'wpComments', function($translate, avatars, utils, ajax, modals, wpComments){
         return {
@@ -442,35 +485,36 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             },
             replace: true,
             template:
-            '<div class="chayka-comments-comment_item" data-ng-class="{positive_karma: comment.comment_karma > 0, negative_karma: comment.comment_karma < 0}">' +
+            '<div class="chayka-comments-comment_item chayka-comments-width" data-ng-class="{positive_karma: comment.comment_karma > 0, negative_karma: comment.comment_karma < 0, unapproved: comment.comment_approved === 0, spam: comment.comment_approved === \'spam\', approved: comment.comment_approved === 1}">' +
             '   <div class="user_details">' +
             '       <span class="user_id">{{comment.user_id}}</span>' +
             '       <img class="avatar" data-ng-src="{{avatar(96)}}"/>' +
-            '       <span class="name">{{comment.comment_author}}</span>' +
+            '       <span class="name">{{comment.comment_author || \'Guest\' | translate }}</span>' +
             '   </div>' +
-            '   <div class="comment_date">{{comment.comment_date | date:\'d MMM y HH:mm:ss\'}}</div>' +
-            '   <div data-spinner="spinner"></div>' +
+            '   <div class="comment_date">{{comment.comment_date | date:\'d MMM y HH:mm:ss\' | translate}}</div>' +
             '   <div class="comment_voting" data-ng-hide="!!preview">' +
             '       <div class="comment_karma" data-ng-class="{positive: comment.comment_karma > 0, negative: comment.comment_karma < 0}">{{(comment.comment_karma > 0 ? "+" : "" ) + comment.comment_karma}}</div>' +
             '       <div class="comment_karma_delta" data-ng-class="{positive: comment.comment_karma_delta > 0, negative: comment.comment_karma_delta < 0}">{{(comment.comment_karma_delta > 0 ? "+" : "" ) + comment.comment_karma_delta}}</div>' +
-            '       <div class="comment_vote_arrow" data-ng-class="{disabled: comment.comment_karma_delta > 0}" data-ng-click="voteUpClicked()"><span class="dashicons dashicons-before dashicons-arrow-up-alt2"></span></div>' +
-            '       <div class="comment_vote_arrow" data-ng-class="{disabled: comment.comment_karma_delta < 0}" data-ng-click="voteDownClicked()"><span class="dashicons dashicons-before dashicons-arrow-down-alt2"></span></div>' +
+            '       <div class="comment_vote_arrow vote_up" data-ng-class="{disabled: comment.comment_karma_delta > 0}" data-ng-click="voteUpClicked()"><span class="dashicons dashicons-before dashicons-arrow-up-alt2"></span></div>' +
+            '       <div class="comment_vote_arrow vote_down" data-ng-class="{disabled: comment.comment_karma_delta < 0}" data-ng-click="voteDownClicked()"><span class="dashicons dashicons-before dashicons-arrow-down-alt2"></span></div>' +
             '   </div>' +
+            '   <div data-spinner="spinner"></div>' +
             '   <div class="comment_content">' +
-            '       <div class="comment_reply_to" data-ng-show="!!replyTo" data-ng-click="showReplyToClicked()">@{{replyTo && replyTo.comment_author}}:</div>' +
+            '       <div class="comment_reply_to chayka-comments-link" data-ng-show="!!replyTo" data-ng-click="showReplyToClicked()">@{{replyTo && replyTo.comment_author}}:</div>' +
             '       <div class="comment_message">{{comment.comment_content | limitTo : unfolded && comment.comment_content.length || maxLength}}<span data-ng-hide="unfolded || comment.comment_content.length < maxLength ">... <span class="comment_unfold" data-ng-click="unfolded = true">more</span></span></span></div>' +
+            '       <div class="comment_total_replies chayka-comments-link" data-ng-show="!!comment.total_replies" data-ng-click="showRepliesClicked()">{{"Replies"|translate}}: {{comment.total_replies}}</div>' +
             '   </div>' +
-            '   <div class="comment_status">' +
+            '   <div class="comment_status" data-ng-hide="comment.comment_approved === 1">' +
             '       {{ (comment.comment_approved === 0 ? "This comment is being moderated, others do not see it" : "") | translate }}' +
             '       {{ (comment.comment_approved === "spam" ? "This comment is marked as spam, others do not see it" : "") | translate }}' +
             '   </div>' +
             '   <div class="comment_tools" data-ng-hide="!!preview">' +
-            '       <span class="tool_link tool_link_reply" data-ng-show="isLoggedIn() && comment.comment_approved === 1" data-ng-click="replyClicked();"><span class="dashicons dashicons-before dashicons-admin-comments"></span> {{"Reply"|translate}}</span>' +
+            '       <span class="tool_link tool_link_reply" data-ng-show="isLoggedIn() && comment.comment_approved === 1 && commentsOpen()" data-ng-click="replyClicked();"><span class="dashicons dashicons-before dashicons-admin-comments"></span> {{"Reply"|translate}}</span>' +
             '       <span class="tool_link tool_link_edit" data-ng-show="canModify()" data-ng-click="editClicked();"><span class="dashicons dashicons-before dashicons-edit"></span> {{"Edit"|translate}}</span>' +
             '       <span class="tool_link tool_link_delete" data-ng-show="canModify()" data-ng-click="deleteClicked();"><span class="dashicons dashicons-before dashicons-trash"></span> {{"Delete"|translate}}</span>' +
             '       <span class="tool_link tool_link_approve" data-ng-hide="!isAdmin() || comment.comment_approved === 1" data-ng-click="approveClicked(1);"><span class="dashicons dashicons-before dashicons-heart"></span> {{"Approve"|translate}}</span>' +
-            '       <span class="tool_link tool_link_ban" data-ng-hide="!isAdmin() || comment.comment_approved === 0" data-ng-click="approveClicked(0);"><span class="dashicons dashicons-before dashicons-dismiss"></span> {{"Ban"|translate}}</span>' +
-            '       <span class="tool_link tool_link_spam" data-ng-hide="!isAdmin() || comment.comment_approved === \'spam\'" data-ng-click="approveClicked(\'spam\');"><span class="dashicons dashicons-before dashicons-flag"></span> {{"SPAM"|translate}}</span>' +
+            '       <span class="tool_link tool_link_ban" data-ng-hide="!isAdmin() || comment.comment_approved === 0 || !!comment.total_replies" data-ng-click="approveClicked(0);"><span class="dashicons dashicons-before dashicons-dismiss"></span> {{"Ban"|translate}}</span>' +
+            '       <span class="tool_link tool_link_spam" data-ng-hide="!isAdmin() || comment.comment_approved === \'spam\' || !!comment.total_replies" data-ng-click="approveClicked(\'spam\');"><span class="dashicons dashicons-before dashicons-flag"></span> {{"SPAM"|translate}}</span>' +
             '   </div>' +
             '</div>',
 
@@ -490,6 +534,10 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
 
                 $scope.canModify = function(){
                     return $scope.isAdmin() || $scope.isLoggedIn() && parseInt($scope.currentUser.id) === parseInt($scope.comment.user_id);
+                };
+
+                $scope.commentsOpen = function(){
+                    return window.Chayka.Posts.postsById[$scope.comment.comment_post_ID].comment_status === 'open';
                 };
 
                 $scope.avatar = function(size){
@@ -572,6 +620,10 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                 $scope.showReplyToClicked = function(){
                     $scope.$emit('Chayka.Comments.dialogReplyTo', $scope.comment);
                 };
+
+                $scope.showRepliesClicked = function(){
+                    $scope.$emit('Chayka.Comments.dialogRepliesTo', $scope.comment);
+                };
             }
         };
     }])
@@ -580,21 +632,26 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             restrict: 'AE',
             scope:{
                 editor: '=commentEditor',
-                postId: '='
+                postId: '=',
+                requireNameEmail: '='
             },
             template:
-            '<form class="chayka-comments-comment_editor" data-ng-class="{non_authorized: !isLoggedIn(), user_authorized: isLoggedIn()}" data-form-validator="validator">' +
-            '   <div data-comment-item="replyToComment" data-preview="true" data-ng-show="!!replyToComment && !!replyToComment.id"></div>' +
+            '<form class="chayka-comments-comment_editor chayka-comments-width" data-ng-class="{non_authorized: !isLoggedIn(), user_authorized: isLoggedIn()}" data-form-validator="validator">' +
+            '   <div class="reply_to_box" data-ng-show="!!replyToComment && !!replyToComment.id">' +
+            '       <h3>{{"Comment"|translate}}:</h3>' +
+            '       <div data-comment-item="replyToComment" data-preview="true"></div>' +
+            '       <h3>{{"Reply"|translate}}:</h3>' +
+            '   </div>' +
             '   <div class="auth_invitation" data-ng-hide="isLoggedIn()">' +
             '       {{"If you"|translate}} <a href="#facebook-login"></a>' +
             '       <a href="#login">{{"log in"|translate}}</a>, {{"it\'ll be easier to leave comments!"|translate}}' +
             '   </div>' +
             '   <div class="flex_box">' +
-            '       <div class="non_authorized_block" data-ng-hide="isLoggedIn()">' +
-            '           <div class="form_field fullsize field_name" data-form-field="comment_author" data-check-if="!isLoggedIn()" data-check-required data-label="Your name">' +
+            '       <div class="non_authorized_block" data-ng-hide="isLoggedIn()" data-ng-class="{require_name_email: requireNameEmail}">' +
+            '           <div class="form_field fullsize field_name" data-form-field="comment_author" data-check-if="!isLoggedIn()" data-check-required data-check-required-if="requireNameEmail" data-label="Your name">' +
             '               <input type="text" data-ng-model="comment.comment_author" placeholder="{{\'Your name\'|translate}}..."/>' +
             '           </div>' +
-            '           <div class="form_field fullsize field_email" data-form-field="comment_author_email" data-check-if="!isLoggedIn()" data-check-required data-check-email data-label="Your email">' +
+            '           <div class="form_field fullsize field_email" data-form-field="comment_author_email" data-check-if="!isLoggedIn()" data-check-required data-check-required-if="requireNameEmail" data-check-email data-label="Your email">' +
             '               <input type="text" data-ng-model="comment.comment_author_email" placeholder="{{\'Your email\'|translate}}..."/>' +
             '           </div>' +
             '           <div class="form_field fullsize field_url" data-form-field="comment_author_url" data-check-if="!isLoggedIn()" data-label="Your site url">' +
@@ -611,9 +668,9 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             '      </div>' +
             '   </div>' +
             '   <div class="form_box-buttons">' +
-            '       <div class="required_fields_note"><span class="required_field_asterisk">*</span> - {{ "required fields" | translate}}</div>' +
-            '       <button data-ng-click="saveClicked()">{{mode|translate}}</button>' +
+            '       <div class="required_fields_note" data-ng-show="requireNameEmail"><span class="required_field_asterisk">*</span> - {{ "required fields" | translate}}</div>' +
             '       <button data-ng-click="cancelClicked()" data-ng-hide="mode===\'Publish\'">{{"Cancel"|translate}}</button>' +
+            '       <button data-ng-click="saveClicked()">{{mode|translate}}</button>' +
             '   </div>' +
             '</form>',
             controller: function($scope, $element){
@@ -689,15 +746,18 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                             'Updating comment...':
                             'Posting comment...';
                     }
-                    ajaxMethod('/api/comment-model', $scope.comment, {
-                        formValidator: $scope.validator,
-                        spinnerFieldId: 'comment_content',
-                        spinnerMessage: spinnerMessage,
-                        success: function(data){
-                            $scope.$emit($scope.comment.id?'Chayka.Comments.commentUpdated':'Chayka.Comments.commentCreated', data.payload);
-                            api.initComment();
-                        }
-                    });
+                    if($scope.validator.validateFields()) {
+                        ajaxMethod('/api/comment-model', $scope.comment, {
+                            formValidator: $scope.validator,
+                            spinnerFieldId: 'comment_content',
+                            validateOnSend: false,
+                            spinnerMessage: spinnerMessage,
+                            success: function (data) {
+                                $scope.$emit($scope.comment.id ? 'Chayka.Comments.commentUpdated' : 'Chayka.Comments.commentCreated', data.payload);
+                                api.initComment();
+                            }
+                        });
+                    }
                 };
 
                 $scope.cancelClicked = function(){

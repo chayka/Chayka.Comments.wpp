@@ -1,0 +1,37 @@
+<h2>Comments</h2>
+
+<div data-ng-cloak>
+    <div data-ng-controller="optionsForm" data-ng-init="namespace = ''">
+        <form data-form-validator="validator" novalidate="novalidate">
+	        <div class="form_field stretch comments_per_page" data-form-field="comments_per_page">
+		        <label class="width70">Comments per page</label><input type="text" data-ng-init="options.comments_per_page='50'" data-ng-model="options.comments_per_page" title="Comments per load"/>
+	        </div>
+	        <div class="form_field stretch comment_order" data-form-field="comment_order">
+		        <label class="width70">Comment order</label><select data-ng-init="options.comment_order='asc'; comment_orderOptions = {'asc':'ASC','desc':'DESC'}" data-ng-model="options.comment_order" data-ng-options="key as value for (key, value) in comment_orderOptions" title="Comment order"></select>
+	        </div>
+            <div class="form_field fullsize checkbox preload_comments" data-form-field="preload_comments">
+                <label>
+                    <input type="checkbox" data-ng-init="options.preload_comments='1'" data-ng-model="options.preload_comments" data-ng-true-value="'1'" data-ng-false-value="''" title="Preload comments"/>
+                    Preload comments
+                </label>
+            </div>
+            <div class="form_field fullsize checkbox require_name_email" data-form-field="require_name_email">
+                <label>
+                    <input type="checkbox" data-ng-init="options.require_name_email='1'" data-ng-model="options.require_name_email" data-ng-true-value="'1'" data-ng-false-value="''" title="Require name and email for non-authenticated users"/>
+                    Require name and email for non-authenticated users
+                </label>
+            </div>
+            <div class="form_field fullsize checkbox comment_registration" data-form-field="comment_registration">
+                <label>
+                    <input type="checkbox" data-ng-init="options.comment_registration=''" data-ng-model="options.comment_registration" data-ng-true-value="'1'" data-ng-false-value="''" title="Autorized users only"/>
+                    Autorized users only
+                </label>
+            </div>
+
+	        <!-- chayka: fields -->
+            <div class="buttons">
+                <button class="button button-primary button-large" data-ng-click="saveOptions();">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
