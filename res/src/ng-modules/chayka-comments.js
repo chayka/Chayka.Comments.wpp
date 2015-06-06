@@ -16,6 +16,8 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
 
         var commentsTimeout = null;
 
+        var avatarSize = 48;
+
         var wpComments = {
 
             /**
@@ -310,6 +312,22 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                 commentsById = {};
                 commentsByParentId = {};
                 commentsByPostId = {};
+            },
+
+            /**
+             * Set comment avatar size
+             * @param {int} size
+             */
+            setAvatarSize: function(size){
+                avatarSize = size;
+            },
+
+            /**
+             * Get comment avatar size
+             * @return {number}
+             */
+            getAvatarSize: function(){
+                return avatarSize;
             }
 
         };
@@ -328,6 +346,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
         $scope.requireNameEmail = !!getVar('require-name-email', true);
         $scope.requireAuth = !!getVar('require-auth', false);
         $scope.readOnly = !!getVar('read-only', false);
+        wpComments.setAvatarSize(parseInt(getVar('avatar-size', 48)));
 
         $scope.comments = [];
         $scope.commentsById = {};
@@ -488,7 +507,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             '<div class="chayka-comments-comment_item chayka-comments-width" data-ng-class="{positive_karma: comment.comment_karma > 0, negative_karma: comment.comment_karma < 0, unapproved: comment.comment_approved === 0, spam: comment.comment_approved === \'spam\', approved: comment.comment_approved === 1}">' +
             '   <div class="user_details">' +
             '       <span class="user_id">{{comment.user_id}}</span>' +
-            '       <img class="avatar" data-ng-src="{{avatar(96)}}"/>' +
+            '       <img class="avatar" data-ng-src="{{avatar()}}" data-ng-srcset="{{avatar(2)}} 2x"/>' +
             '       <span class="name">{{comment.comment_author || \'Guest\' | translate }}</span>' +
             '   </div>' +
             '   <div class="comment_date">{{comment.comment_date | date:\'d MMM y HH:mm:ss\' | translate}}</div>' +
@@ -518,7 +537,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             '   </div>' +
             '</div>',
 
-            controller: function($scope, $element){
+            controller: function($scope){
                 $scope.spinner = null;
                 $scope.unfolded = false;
                 $scope.maxLength = 300;
@@ -540,7 +559,9 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                     return window.Chayka.Posts.postsById[$scope.comment.comment_post_ID].comment_status === 'open';
                 };
 
-                $scope.avatar = function(size){
+                $scope.avatar = function(multiplier){
+                    multiplier = multiplier || 1;
+                    var size = wpComments.getAvatarSize() * multiplier;
                     return $scope.comment.meta && $scope.comment.meta.fb_user_id?
                         avatars.fbavatar($scope.comment.meta.fb_user_id, size):
                         avatars.gravatar($scope.comment.comment_author_email, size);
@@ -633,7 +654,8 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             scope:{
                 editor: '=commentEditor',
                 postId: '=',
-                requireNameEmail: '='
+                requireNameEmail: '=',
+                requireAuth: '=?'
             },
             template:
             '<form class="chayka-comments-comment_editor chayka-comments-width" data-ng-class="{non_authorized: !isLoggedIn(), user_authorized: isLoggedIn()}" data-form-validator="validator">' +
@@ -642,11 +664,22 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             '       <div data-comment-item="replyToComment" data-preview="true"></div>' +
             '       <h3>{{"Reply"|translate}}:</h3>' +
             '   </div>' +
-            '   <div class="auth_invitation" data-ng-hide="isLoggedIn()">' +
-            '       {{"If you"|translate}} <a href="#facebook-login"></a>' +
-            '       <a href="#login">{{"log in"|translate}}</a>, {{"it\'ll be easier to leave comments!"|translate}}' +
+            '   <div class="auth_required" data-ng-show="requireAuth && !isLoggedIn()">' +
+            '       {{ "Only authenticated users can leave comments" | translate}}.<br/>' +
+            '       {{"You need to" | translate }} <a href="/wp-login.php?action=register">{{"join"|translate}}</a> {{"and then" | translate }} <a href="/wp-login.php">{{"log in"|translate}}</a>' +
+            '       <div class="social_auth" data-ng-show="canAuthViaFacebook() || canAuthViaLinkedIn()">' +
+            '           <div class="social_or">{{"or"|translate}}</div> {{"you can log in via social network"|translate}}:' +
+            '           <div class="auth_button auth_button_facebook" data-ng-show="canAuthViaFacebook()" data-auth-facebook-button>facebook</div>' +
+            '           <div class="auth_button auth_button_linkedin"  data-ng-show="canAuthViaLinkedIn()" data-auth-linkedin-button>linkedin</div>' +
+            '       </div>' +
             '   </div>' +
-            '   <div class="flex_box">' +
+            '   <div class="auth_invitation" data-ng-hide="isLoggedIn() || requireAuth">' +
+            '       {{"If you"|translate}} ' +
+            '       <span class="auth_button auth_button_facebook" data-ng-show="canAuthViaFacebook()" data-auth-facebook-button></span>' +
+            '       <span class="auth_button auth_button_linkedin"  data-ng-show="canAuthViaLinkedIn()" data-auth-linkedin-button></span>' +
+            '       <a href="/wp-login.php">{{"log in"|translate}}</a>, {{"it\'ll be easier to leave comments!"|translate}}' +
+            '   </div>' +
+            '   <div class="flex_box" data-ng-hide="requireAuth && !isLoggedIn()">' +
             '       <div class="non_authorized_block" data-ng-hide="isLoggedIn()" data-ng-class="{require_name_email: requireNameEmail}">' +
             '           <div class="form_field fullsize field_name" data-form-field="comment_author" data-check-if="!isLoggedIn()" data-check-required data-check-required-if="requireNameEmail" data-label="Your name">' +
             '               <input type="text" data-ng-model="comment.comment_author" placeholder="{{\'Your name\'|translate}}..."/>' +
@@ -667,13 +700,13 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             '           </div>' +
             '      </div>' +
             '   </div>' +
-            '   <div class="form_box-buttons">' +
+            '   <div class="form_box-buttons" data-ng-hide="requireAuth && !isLoggedIn()">' +
             '       <div class="required_fields_note" data-ng-show="requireNameEmail"><span class="required_field_asterisk">*</span> - {{ "required fields" | translate}}</div>' +
             '       <button data-ng-click="cancelClicked()" data-ng-hide="mode===\'Publish\'">{{"Cancel"|translate}}</button>' +
             '       <button data-ng-click="saveClicked()">{{mode|translate}}</button>' +
             '   </div>' +
             '</form>',
-            controller: function($scope, $element){
+            controller: function($scope){
 
                 $scope.currentUser = utils.getItem(window, 'Chayka.Users.currentUser');
 
@@ -691,6 +724,14 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                     return $scope.comment.meta && $scope.currentUser.meta.fb_user_id?
                         avatars.fbavatar($scope.comment.meta.fb_user_id, size):
                         avatars.gravatar($scope.comment.comment_author_email, size);
+                };
+
+                $scope.canAuthViaFacebook = function(){
+                    return !!utils.getItem(window, 'Chayka.Auth.Facebook');
+                };
+
+                $scope.canAuthViaLinkedIn = function(){
+                    return !!utils.getItem(window, 'Chayka.Auth.LinkedIn');
                 };
 
                 var api = {

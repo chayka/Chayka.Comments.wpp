@@ -442,8 +442,67 @@
     &.non_authorized{ /*editor*/
         padding-top: 1em;
 
+        & > .auth_required{
+            text-align: center;
+
+            & > .social_auth{
+                margin: 1em auto 0;
+                border-top: 1px dotted #000;
+                width: 280px;
+                & > .social_or{
+                    margin: -1em auto 0;
+                    background-color: white;
+                    width: 50px;
+                }
+
+                & > .auth_button{
+                    color: white;
+                    line-height: 30px;
+                    padding: 0 10px 0 35px;
+                    background: no-repeat 5px 50%;
+                    background-size: 20px 20px;
+                    display: inline-block;
+                    margin: 1ex 1ex;
+                    width: 120px;
+                    border-radius: 3px;
+                    cursor: pointer;
+
+                    &.auth_button_facebook{
+                        background-image: ~'url(../img/fb40x40.png)';
+                        background-color: #4c66a4;
+                    }
+                    &.auth_button_linkedin{
+                        background-image: ~'url(../img/in40x40.png)';
+                        background-color: #0077b5;
+                    }
+                }
+            }
+        }
+
         .auth_invitation{
-            text-align: right;
+            text-align: center;
+            margin-bottom: 1em;
+            line-height: 26px;
+            & > .auth_button{
+                color: white;
+                background: no-repeat 50% 50%;
+                background-size: 20px 20px;
+                width: 26px;
+                height: 26px;
+                display: inline-block;
+                margin: 0 2px -.8ex;
+                border-radius: 3px;
+                cursor: pointer;
+
+                &.auth_button_facebook{
+                    background-image: ~'url(../img/fb40x40.png)';
+                    background-color: #4c66a4;
+                }
+                &.auth_button_linkedin{
+                    background-image: ~'url(../img/in40x40.png)';
+                    background-color: #0077b5;
+                }
+            }
         }
 
         .non_authorized_block{
