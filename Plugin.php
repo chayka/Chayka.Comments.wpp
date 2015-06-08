@@ -40,6 +40,7 @@ class Plugin extends WP\Plugin{
     public function registerFilters() {
 		/* chayka: registerFilters */
 	    $this->addFilter('comments_template', 'getCommentsTemplateFile', 10, 0);
+	    $this->addFilter('get_comments_link', 'getCommentsLink', 10, 2);
     }
 
 	/**
@@ -96,4 +97,14 @@ class Plugin extends WP\Plugin{
     public function unregisterMetaBoxes(){
         /* chayka: unregisterMetaBoxes */
     }
+
+	/**
+	 * @param $link
+	 * @param $postId
+	 *
+	 * @return string
+	 */
+	public function getCommentsLink($link, $postId){
+		return $postId?get_permalink($postId).'#comments':$link;
+	}
 }

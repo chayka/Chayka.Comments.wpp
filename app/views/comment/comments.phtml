@@ -56,11 +56,11 @@ if($this->preload):
 		'<div data-comment-editor="editors.static" data-post-id="postId" data-require-name-email="requireNameEmail" data-require-auth="requireAuth"></div>';
 
 ?>
-<div class="chayka-comments" >
+<div class="chayka-comments" ><a name="comments"></a>
 	<?php if ( post_password_required() ) : ?>
 	<div class="no_password chayka-comments-width"><?php $this->__( 'This post is password protected. Enter the password to view any comments.'); ?></div>
 	<?php else: \Chayka\WP\Helpers\AngularHelper::enqueueScriptStyle('chayka-comments');?>
-		<div data-ng-controller="comments" data-post-id="<?php the_ID();?>" data-order="<?php echo $this->order;?>" data-read-only="<?php echo $commentsAreClosed?>" data-import="<?php echo $this->preload?'Chayka.Comments.commentsByPostId.'.get_the_ID():'';?>" data-per-page="<?php $this->escape($this->perPage);?>" data-require-name-email="<?php echo $this->requireNameEmail?>" data-require-auth="<?php echo $this->requireAuth;?>" data-avatar-size="<?php echo $this->avatarSize;?>" data-ng-class="{order_asc: order === 'ASC', order_desc: 'DESC', require_name_email: !!requireNameEmail, read_only: !!readOnly}" data-ng-cloak>
+		<div class="comments_controller chayka-comments-width" data-ng-controller="comments" data-post-id="<?php the_ID();?>" data-order="<?php echo $this->order;?>" data-read-only="<?php echo $commentsAreClosed?>" data-import="<?php echo $this->preload?'Chayka.Comments.commentsByPostId.'.get_the_ID():'';?>" data-per-page="<?php $this->escape($this->perPage);?>" data-require-name-email="<?php echo $this->requireNameEmail?>" data-require-auth="<?php echo $this->requireAuth;?>" data-avatar-size="<?php echo $this->avatarSize;?>" data-ng-class="{order_asc: order === 'ASC', order_desc: 'DESC', require_name_email: !!requireNameEmail, read_only: !!readOnly}" data-ng-cloak>
 			<?php echo $direct?$showMorePaneHtml:$editorHtml;?>
 			<div class="comments-list" data-ng-show="!!comments.length">
 				<div data-ng-repeat="comment in comments track by comment.id" data-comment-item="comment"></div>
