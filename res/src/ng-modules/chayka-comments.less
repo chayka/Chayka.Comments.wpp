@@ -347,25 +347,22 @@
 
 
     .content_block{
-        flex: 1 1;
+        flex: 1 1 auto;
 //        width: 100%;
 //        float: left;
         box-sizing: border-box;
         display: flex;
-        flex-flow: column nowrap;
 
         .field_content{
-            flex: 1 1 100%;
-            display: flex;
-            flex-flow: column nowrap;
             margin-right: 0;
+            width: 100%;
 
             label{
                 display: none;
             }
 
             .input{
-                flex: 1 1;
+//                flex: 1 1;
 //                flex-flow: column;
                 textarea{
 //                    flex: 1 1;
@@ -548,14 +545,14 @@
                 flex-flow: column;
             }
             .non_authorized_block{
-                order: 2;
+                order: 1;
                 flex: 1 1;
                 .form_field{
                     width: 100%;
                 }
             }
             .content_block{
-                order: 1;
+                order: 0;
                 .input{
                     textarea{
                         min-height: 100px;
