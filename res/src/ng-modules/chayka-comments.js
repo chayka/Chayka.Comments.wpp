@@ -401,23 +401,28 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                 angular.extend($scope.commentsById[comment.id], comment);
             }else{
                 $scope.commentsById[comment.id] = comment;
-                if($scope.order === 'asc'){
-                    $scope.comments.push(comment);
-                }else{
-                    $scope.comments.unshift(comment);
-                }
             }
-            $scope.total += 1;
             wpComments.indexComment(comment, true, true);
         };
 
-        $scope.onCommentPosted = function($event, comment){
+        $scope.onCommentCreated = function($event, comment){
+            $scope.editorPopup.hide();
+            $scope.indexComment(comment);
+            if($scope.order === 'asc'){
+                $scope.comments.push(comment);
+            }else{
+                $scope.comments.unshift(comment);
+            }
+            $scope.total += 1;
+        };
+
+        $scope.onCommentUpdated = function($event, comment){
             $scope.editorPopup.hide();
             $scope.indexComment(comment);
         };
 
-        $scope.$on('Chayka.Comments.commentUpdated', $scope.onCommentPosted);
-        $scope.$on('Chayka.Comments.commentCreated', $scope.onCommentPosted);
+        $scope.$on('Chayka.Comments.commentUpdated', $scope.onCommentUpdated);
+        $scope.$on('Chayka.Comments.commentCreated', $scope.onCommentCreated);
 
         $scope.$on('Chayka.Comments.commentDeleted', function($event, comment){
             var index = $scope.comments.indexOf(comment);
