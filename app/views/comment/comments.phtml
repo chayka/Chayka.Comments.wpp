@@ -50,7 +50,7 @@ if($this->preload):
 	};
 </script>
 <?php endif;
-	$showMorePaneHtml = '<div class="show_hidden_pane chayka-comments-width" data-ng-hide="total <= comments.length"><span class="link chayka-comments-link" data-ng-click="showMore(perPage)">{{"Show older comments..."|translate}}</span><span class="shown_total">{{comments.length}} {{"of"|translate}} {{total}} {{"shown" | translate}}</span></div>';
+	$showMorePaneHtml = '<div class="show_hidden_pane chayka-comments-width" data-ng-hide="total <= comments.length"><span class="link chayka-comments-link" data-ng-click="showMore(perPage)">{{"Show older comments..."|nls}}</span><span class="shown_total">{{comments.length}} {{"of"|nls}} {{total}} {{"shown" | nls}}</span></div>';
 	$editorHtml = $commentsAreClosed?
 		'<div class="no_comments chayka-comments-width" data-ng-show="!!comments.length">'. $this->_( 'Comments are closed') . '</div>':
 		'<div data-comment-editor="editors.static" data-post-id="postId" data-require-name-email="requireNameEmail" data-require-auth="requireAuth"></div>';
@@ -71,9 +71,9 @@ if($this->preload):
 			</div>
 			<div data-modal="dialogPopup">
 				<div class="chayka-comments-dialog" data-ng-class="{mode_reply: dialog.mode === 'reply', mode_replies: dialog.mode === 'replies'}">
-					<h3>{{'Comment'|translate}}:</h3>
+					<h3>{{'Comment'|nls}}:</h3>
 					<div data-comment-item="dialog.parentComment"></div>
-					<h3>{{(dialog.replies.length > 1?'Replies':'Reply')|translate}}:</h3>
+					<h3>{{(dialog.replies.length > 1?'Replies':'Reply')|nls}}:</h3>
 					<div class="replies_list">
 						<div data-ng-repeat="comment in dialog.replies | orderBy : 'id' track by comment.id" data-comment-item="comment"></div>
 					</div>

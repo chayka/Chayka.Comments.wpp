@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-modals', 'chayka-spinners', 'chayka-ajax',
-    'chayka-translate', 'chayka-utils', 'chayka-avatars'])
+    'chayka-nls', 'chayka-utils', 'chayka-avatars'])
     .factory('wpComments', ['ajax', 'utils', function(ajax, utils){
 
         var commentsQueue = {};
@@ -334,7 +334,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
 
         return wpComments;
     }])
-    .controller('comments', ['$scope', '$element', '$translate', 'ajax', 'utils', 'wpComments', function($scope, $element, $translate, ajax, utils, wpComments){
+    .controller('comments', ['$scope', '$element', 'nls', 'ajax', 'utils', 'wpComments', function($scope, $element, nls, ajax, utils, wpComments){
 
         var getVar = function(name, defaultValue){
             return utils.getHtmlParam($element, name, defaultValue);
@@ -500,7 +500,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             $scope.loadComments($scope.perPage);
         }
     }])
-    .directive('commentItem', ['$translate', 'avatars', 'utils', 'ajax', 'modals', 'wpComments', function($translate, avatars, utils, ajax, modals, wpComments){
+    .directive('commentItem', ['nls', 'avatars', 'utils', 'ajax', 'modals', 'wpComments', function(nls, avatars, utils, ajax, modals, wpComments){
         return {
             restrict: 'AE',
             scope:{
@@ -513,9 +513,9 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             '   <div class="user_details">' +
             '       <span class="user_id">{{comment.user_id}}</span>' +
             '       <img class="avatar" data-ng-src="{{avatar()}}" data-ng-srcset="{{avatar(2)}} 2x"/>' +
-            '       <span class="name">{{comment.comment_author || \'Guest\' | translate }}</span>' +
+            '       <span class="name">{{comment.comment_author || \'Guest\' | nls }}</span>' +
             '   </div>' +
-            '   <div class="comment_date">{{comment.comment_date | date:\'d MMM y HH:mm:ss\' | translate}}</div>' +
+            '   <div class="comment_date">{{comment.comment_date | date:\'d MMM y HH:mm:ss\' | nls}}</div>' +
             '   <div class="comment_voting" data-ng-hide="!!preview">' +
             '       <div class="comment_karma" data-ng-class="{positive: comment.comment_karma > 0, negative: comment.comment_karma < 0}">{{(comment.comment_karma > 0 ? "+" : "" ) + comment.comment_karma}}</div>' +
             '       <div class="comment_karma_delta" data-ng-class="{positive: comment.comment_karma_delta > 0, negative: comment.comment_karma_delta < 0}">{{(comment.comment_karma_delta > 0 ? "+" : "" ) + comment.comment_karma_delta}}</div>' +
@@ -526,19 +526,19 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             '   <div class="comment_content">' +
             '       <div class="comment_reply_to chayka-comments-link" data-ng-show="!!replyTo" data-ng-click="showReplyToClicked()">@{{replyTo && replyTo.comment_author}}:</div>' +
             '       <div class="comment_message">{{comment.comment_content | limitTo : unfolded && comment.comment_content.length || maxLength}}<span data-ng-hide="unfolded || comment.comment_content.length < maxLength ">... <span class="comment_unfold" data-ng-click="unfolded = true">more</span></span></span></div>' +
-            '       <div class="comment_total_replies chayka-comments-link" data-ng-show="!!comment.total_replies" data-ng-click="showRepliesClicked()">{{"Replies"|translate}}: {{comment.total_replies}}</div>' +
+            '       <div class="comment_total_replies chayka-comments-link" data-ng-show="!!comment.total_replies" data-ng-click="showRepliesClicked()">{{"Replies"|nls}}: {{comment.total_replies}}</div>' +
             '   </div>' +
             '   <div class="comment_status" data-ng-hide="comment.comment_approved === 1">' +
-            '       {{ (comment.comment_approved === 0 ? "This comment is being moderated, others do not see it" : "") | translate }}' +
-            '       {{ (comment.comment_approved === "spam" ? "This comment is marked as spam, others do not see it" : "") | translate }}' +
+            '       {{ (comment.comment_approved === 0 ? "This comment is being moderated, others do not see it" : "") | nls }}' +
+            '       {{ (comment.comment_approved === "spam" ? "This comment is marked as spam, others do not see it" : "") | nls }}' +
             '   </div>' +
             '   <div class="comment_tools" data-ng-hide="!!preview">' +
-            '       <span class="tool_link tool_link_reply" data-ng-show="isLoggedIn() && comment.comment_approved === 1 && commentsOpen()" data-ng-click="replyClicked();"><span class="dashicons dashicons-before dashicons-admin-comments"></span> {{"Reply"|translate}}</span>' +
-            '       <span class="tool_link tool_link_edit" data-ng-show="canModify()" data-ng-click="editClicked();"><span class="dashicons dashicons-before dashicons-edit"></span> {{"Edit"|translate}}</span>' +
-            '       <span class="tool_link tool_link_delete" data-ng-show="canModify()" data-ng-click="deleteClicked();"><span class="dashicons dashicons-before dashicons-trash"></span> {{"Delete"|translate}}</span>' +
-            '       <span class="tool_link tool_link_approve" data-ng-hide="!isAdmin() || comment.comment_approved === 1" data-ng-click="approveClicked(1);"><span class="dashicons dashicons-before dashicons-heart"></span> {{"Approve"|translate}}</span>' +
-            '       <span class="tool_link tool_link_ban" data-ng-hide="!isAdmin() || comment.comment_approved === 0 || !!comment.total_replies" data-ng-click="approveClicked(0);"><span class="dashicons dashicons-before dashicons-dismiss"></span> {{"Ban"|translate}}</span>' +
-            '       <span class="tool_link tool_link_spam" data-ng-hide="!isAdmin() || comment.comment_approved === \'spam\' || !!comment.total_replies" data-ng-click="approveClicked(\'spam\');"><span class="dashicons dashicons-before dashicons-flag"></span> {{"SPAM"|translate}}</span>' +
+            '       <span class="tool_link tool_link_reply" data-ng-show="isLoggedIn() && comment.comment_approved === 1 && commentsOpen()" data-ng-click="replyClicked();"><span class="dashicons dashicons-before dashicons-admin-comments"></span> {{"Reply"|nls}}</span>' +
+            '       <span class="tool_link tool_link_edit" data-ng-show="canModify()" data-ng-click="editClicked();"><span class="dashicons dashicons-before dashicons-edit"></span> {{"Edit"|nls}}</span>' +
+            '       <span class="tool_link tool_link_delete" data-ng-show="canModify()" data-ng-click="deleteClicked();"><span class="dashicons dashicons-before dashicons-trash"></span> {{"Delete"|nls}}</span>' +
+            '       <span class="tool_link tool_link_approve" data-ng-hide="!isAdmin() || comment.comment_approved === 1" data-ng-click="approveClicked(1);"><span class="dashicons dashicons-before dashicons-heart"></span> {{"Approve"|nls}}</span>' +
+            '       <span class="tool_link tool_link_ban" data-ng-hide="!isAdmin() || comment.comment_approved === 0 || !!comment.total_replies" data-ng-click="approveClicked(0);"><span class="dashicons dashicons-before dashicons-dismiss"></span> {{"Ban"|nls}}</span>' +
+            '       <span class="tool_link tool_link_spam" data-ng-hide="!isAdmin() || comment.comment_approved === \'spam\' || !!comment.total_replies" data-ng-click="approveClicked(\'spam\');"><span class="dashicons dashicons-before dashicons-flag"></span> {{"SPAM"|nls}}</span>' +
             '   </div>' +
             '</div>',
 
@@ -653,7 +653,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             }
         };
     }])
-    .directive('commentEditor', ['$translate', 'wpComments', 'avatars', 'utils', 'ajax', function($translate, wpComments, avatars, utils, ajax){
+    .directive('commentEditor', ['nls', 'wpComments', 'avatars', 'utils', 'ajax', function(nls, wpComments, avatars, utils, ajax){
         return {
             restrict: 'AE',
             scope:{
@@ -665,35 +665,35 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             template:
             '<form class="chayka-comments-comment_editor chayka-comments-width" data-ng-class="{non_authorized: !isLoggedIn(), user_authorized: isLoggedIn()}" data-form-validator="validator">' +
             '   <div class="reply_to_box" data-ng-show="!!replyToComment && !!replyToComment.id">' +
-            '       <h3>{{"Comment"|translate}}:</h3>' +
+            '       <h3>{{"Comment"|nls}}:</h3>' +
             '       <div data-comment-item="replyToComment" data-preview="true"></div>' +
-            '       <h3>{{"Reply"|translate}}:</h3>' +
+            '       <h3>{{"Reply"|nls}}:</h3>' +
             '   </div>' +
             '   <div class="auth_required" data-ng-show="requireAuth && !isLoggedIn()">' +
-            '       {{ "Only authenticated users can leave comments" | translate}}.<br/>' +
-            '       {{"You need to" | translate }} <a href="/wp-login.php?action=register">{{"join"|translate}}</a> {{"and then" | translate }} <a href="/wp-login.php">{{"log in"|translate}}</a>' +
+            '       {{ "Only authenticated users can leave comments" | nls}}.<br/>' +
+            '       {{"You need to" | nls }} <a href="/wp-login.php?action=register">{{"join"|nls}}</a> {{"and then" | nls }} <a href="/wp-login.php">{{"log in"|nls}}</a>' +
             '       <div class="social_auth" data-ng-show="canAuthViaFacebook() || canAuthViaLinkedIn()">' +
-            '           <div class="social_or">{{"or"|translate}}</div> {{"you can log in via social network"|translate}}:' +
+            '           <div class="social_or">{{"or"|nls}}</div> {{"you can log in via social network"|nls}}:' +
             '           <div class="auth_button auth_button_facebook" data-ng-show="canAuthViaFacebook()" data-auth-facebook-button>facebook</div>' +
             '           <div class="auth_button auth_button_linkedin"  data-ng-show="canAuthViaLinkedIn()" data-auth-linkedin-button>linkedin</div>' +
             '       </div>' +
             '   </div>' +
             '   <div class="auth_invitation" data-ng-hide="isLoggedIn() || requireAuth">' +
-            '       {{"If you"|translate}} ' +
+            '       {{"If you"|nls}} ' +
             '       <span class="auth_button auth_button_facebook" data-ng-show="canAuthViaFacebook()" data-auth-facebook-button></span>' +
             '       <span class="auth_button auth_button_linkedin"  data-ng-show="canAuthViaLinkedIn()" data-auth-linkedin-button></span>' +
-            '       <a href="/wp-login.php">{{"log in"|translate}}</a>, {{"it\'ll be easier to leave comments!"|translate}}' +
+            '       <a href="/wp-login.php">{{"log in"|nls}}</a>, {{"it\'ll be easier to leave comments!"|nls}}' +
             '   </div>' +
             '   <div class="flex_box" data-ng-hide="requireAuth && !isLoggedIn()">' +
             '       <div class="non_authorized_block" data-ng-hide="isLoggedIn()" data-ng-class="{require_name_email: requireNameEmail}">' +
             '           <div class="form_field fullsize field_name" data-form-field="comment_author" data-check-if="!isLoggedIn()" data-check-required data-check-required-if="requireNameEmail" data-label="Your name">' +
-            '               <input type="text" data-ng-model="comment.comment_author" placeholder="{{\'Your name\'|translate}}..."/>' +
+            '               <input type="text" data-ng-model="comment.comment_author" placeholder="{{\'Your name\'|nls}}..."/>' +
             '           </div>' +
             '           <div class="form_field fullsize field_email" data-form-field="comment_author_email" data-check-if="!isLoggedIn()" data-check-required data-check-required-if="requireNameEmail" data-check-email data-label="Your email">' +
-            '               <input type="text" data-ng-model="comment.comment_author_email" placeholder="{{\'Your email\'|translate}}..."/>' +
+            '               <input type="text" data-ng-model="comment.comment_author_email" placeholder="{{\'Your email\'|nls}}..."/>' +
             '           </div>' +
             '           <div class="form_field fullsize field_url" data-form-field="comment_author_url" data-check-if="!isLoggedIn()" data-label="Your site url">' +
-            '               <input type="text" data-ng-model="comment.comment_author_url" placeholder="{{\'Your site url\'|translate}}..."/>' +
+            '               <input type="text" data-ng-model="comment.comment_author_url" placeholder="{{\'Your site url\'|nls}}..."/>' +
             '           </div>' +
             '       </div>' +
             '       <div class="user_authorized_block" data-ng-show="isLoggedIn()">' +
@@ -701,14 +701,14 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             '       </div>' +
             '       <div class="content_block">' +
             '           <div class="form_field fullsize field_content" data-form-field="comment_content" data-label="Your comment" data-check-required>' +
-            '               <textarea data-ng-model="comment.comment_content" placeholder="{{\'Your comment\'|translate}}..." data-auto-height></textarea>' +
+            '               <textarea data-ng-model="comment.comment_content" placeholder="{{\'Your comment\'|nls}}..." data-auto-height></textarea>' +
             '           </div>' +
             '      </div>' +
             '   </div>' +
             '   <div class="form_box-buttons" data-ng-hide="requireAuth && !isLoggedIn()">' +
-            '       <div class="required_fields_note" data-ng-show="requireNameEmail"><span class="required_field_asterisk">*</span> - {{ "required fields" | translate}}</div>' +
-            '       <button data-ng-click="cancelClicked()" data-ng-hide="mode===\'Publish\'">{{"Cancel"|translate}}</button>' +
-            '       <button data-ng-click="saveClicked()">{{mode|translate}}</button>' +
+            '       <div class="required_fields_note" data-ng-show="requireNameEmail"><span class="required_field_asterisk">*</span> - {{ "required fields" | nls}}</div>' +
+            '       <button data-ng-click="cancelClicked()" data-ng-hide="mode===\'Publish\'">{{"Cancel"|nls}}</button>' +
+            '       <button data-ng-click="saveClicked()">{{mode|nls}}</button>' +
             '   </div>' +
             '</form>',
             controller: function($scope){

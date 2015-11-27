@@ -62,7 +62,7 @@ class Plugin extends WP\Plugin{
         $this->setResSrcDir('src/');
         $this->setResDistDir('dist/');
 
-	    $this->registerNgScript('chayka-comments', 'ng-modules/chayka-comments.js', ['chayka-modals', 'chayka-ajax', 'chayka-spinners', 'chayka-forms', 'chayka-avatars', 'chayka-buttons', 'chayka-utils']);
+	    $this->registerNgScript('chayka-comments', 'ng-modules/chayka-comments.js', ['chayka-modals', 'chayka-ajax', 'chayka-spinners', 'chayka-forms', 'chayka-avatars', 'chayka-buttons', 'chayka-nls', 'chayka-utils']);
 		$this->registerStyle('chayka-comments', 'ng-modules/chayka-comments.css', ['chayka-modals', 'chayka-spinners', 'chayka-forms', 'dashicons']);
 
 		/* chayka: registerResources */
