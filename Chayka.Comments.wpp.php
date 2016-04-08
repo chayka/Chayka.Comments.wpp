@@ -15,7 +15,7 @@ if(!class_exists("Chayka\\WP\\Plugin")){
     add_action( 'admin_notices', function () {
 ?>
     <div class="error">
-        <p>Chayka Framework functionality is not available</p>
+        <p>Chayka.Core plugin is required in order for Chayka.Comments to work properly</p>
     </div>
 <?php
 	});
