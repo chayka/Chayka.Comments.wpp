@@ -247,6 +247,9 @@
 .chayka-comments-comment_item.comment_refreshed {
   background-color: antiquewhite;
 }
+.modal_body .chayka-comments-comment_editor {
+  margin-bottom: 0;
+}
 .chayka-comments-comment_editor {
   padding: 0.5em 0;
   margin-bottom: 2em;

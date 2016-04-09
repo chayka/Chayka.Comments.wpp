@@ -19,7 +19,6 @@ if(!class_exists('Chayka\WP\Plugin')){
     </div>
 <?php
 	});
-}else if(class_exists('Chayka\Comments\Plugin')){
-//    require_once dirname(__FILE__).'/Plugin.php';
+}else{
 	add_action('init', array('Chayka\Comments\Plugin', 'init'));
 }
