@@ -9,9 +9,9 @@
  * License: proprietary
  */
 
-require_once 'vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
-if(!class_exists("Chayka\\WP\\Plugin")){
+if(!class_exists('Chayka\WP\Plugin')){
     add_action( 'admin_notices', function () {
 ?>
     <div class="error">
@@ -19,7 +19,7 @@ if(!class_exists("Chayka\\WP\\Plugin")){
     </div>
 <?php
 	});
-}else{
-    require_once dirname(__FILE__).'/Plugin.php';
-	add_action('init', array("Chayka\\Comments\\Plugin", "init"));
+}else if(class_exists('Chayka\Comments\Plugin')){
+//    require_once dirname(__FILE__).'/Plugin.php';
+	add_action('init', array('Chayka\Comments\Plugin', 'init'));
 }

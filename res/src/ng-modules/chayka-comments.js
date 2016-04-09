@@ -697,7 +697,7 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
             '           </div>' +
             '       </div>' +
             '       <div class="user_authorized_block" data-ng-show="isLoggedIn()">' +
-            '           <img class="avatar" data-ng-src="{{avatar(96)}}"/>' +
+            '           <img class="avatar" data-ng-src="{{avatar()}}" data-ng-srcset="{{avatar(2)}} 2x"/>' +
             '       </div>' +
             '       <div class="content_block">' +
             '           <div class="form_field fullsize field_content" data-form-field="comment_content" data-label="Your comment" data-check-required>' +
@@ -725,8 +725,10 @@ angular.module('chayka-comments', ['chayka-forms', 'chayka-buttons', 'chayka-mod
                     return !!parseInt($scope.currentUser.id);
                 };
 
-                $scope.avatar = function(size){
-                    return $scope.comment.meta && $scope.currentUser.meta.fb_user_id?
+                $scope.avatar = function(multiplier){
+                    multiplier = multiplier || 1;
+                    var size = wpComments.getAvatarSize() * multiplier;
+                    return $scope.comment.meta && $scope.comment.meta.fb_user_id?
                         avatars.fbavatar($scope.comment.meta.fb_user_id, size):
                         avatars.gravatar($scope.comment.comment_author_email, size);
                 };
