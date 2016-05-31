@@ -1,49 +1,47 @@
 <h2>Comments Options</h2>
 
-<div data-ng-cloak data-ng-init="options={};">
-    <div data-console-page-options="options" data-namespace="">
-	        <div class="form_field stretch comments_per_page" data-form-field="comments_per_page">
-		        <label class="width70">Comments per page</label><input type="text" data-ng-init="options.comments_per_page='50'" data-ng-model="options.comments_per_page" title="Comments per load"/>
-	        </div>
-	        <div class="form_field stretch comment_order" data-form-field="comment_order">
-		        <label class="width70">Comment order</label><select data-ng-init="options.comment_order='asc'; comment_orderOptions = {'asc':'ASC','desc':'DESC'}" data-ng-model="options.comment_order" data-ng-options="key as value for (key, value) in comment_orderOptions" title="Comment order"></select>
-	        </div>
-            <div class="form_field fullsize checkbox preload_comments" data-form-field="preload_comments">
-                <label>
-                    <input type="checkbox" data-ng-init="options.preload_comments='1'" data-ng-model="options.preload_comments" data-ng-true-value="'1'" data-ng-false-value="''" title="Preload comments"/>
-                    Preload comments
-                </label>
-            </div>
-            <div class="form_field fullsize checkbox require_name_email" data-form-field="require_name_email">
-                <label>
-                    <input type="checkbox" data-ng-init="options.require_name_email='1'" data-ng-model="options.require_name_email" data-ng-true-value="'1'" data-ng-false-value="''" title="Require name and email for non-authenticated users"/>
-                    Require name and email for non-authenticated users
-                </label>
-            </div>
-            <div class="form_field fullsize checkbox comment_registration" data-form-field="comment_registration">
-                <label>
-                    <input type="checkbox" data-ng-init="options.comment_registration=''" data-ng-model="options.comment_registration" data-ng-true-value="'1'" data-ng-false-value="''" title="Autorized users only"/>
-                    Autorized users only
-                </label>
-            </div>
-	        <h2>Comment avatar options:</h2>
-	        <div class="form_field stretch avatar_size" data-form-field="avatar_size">
-		        <label class="width60">Avatar size (px)</label><input type="text" data-ng-init="options.avatar_size='48'" data-ng-model="options.avatar_size" title="Avatar size (px)"/>
-	        </div>
-            <div class="form_field stretch avatar_default" data-form-field="avatar_default">
-                <label class="width60">Gravatar type</label><select data-ng-init="options.avatar_default='mm'; avatar_defaultOptions = {'mm':'Mystery Man','blank':'Blank','':'Gravatar Logo','identicon':'Identicon','wavatar':'Wavatar','monsterid':'MonsterID','retro':'Retro'}" data-ng-model="options.avatar_default" data-ng-options="key as value for (key, value) in avatar_defaultOptions" title="Gravatar type"></select>
-            </div>
-            <div class="form_field stretch avatar_default_empty" data-form-field="avatar_default_empty">
-                <label class="width60">Guest Gravatar type</label><select data-ng-init="options.avatar_default_empty='mm'; avatar_default_emptyOptions = {'mm':'Mystery Man','blank':'Blank','':'Gravatar Logo'}" data-ng-model="options.avatar_default_empty" data-ng-options="key as value for (key, value) in avatar_default_emptyOptions" title="Anonymous Gravatar type"></select>
-            </div>
-	        <div class="form_field fullsize checkbox avatar_force_default" data-form-field="avatar_force_default">
-		        <label>
-			        <input type="checkbox" data-ng-init="options.avatar_force_default=''" data-ng-model="options.avatar_force_default" data-ng-true-value="'1'" data-ng-false-value="''" title="Force default gravatar"/>
-			        Force default gravatar
-		        </label>
-	        </div>
-
-
-	        <!-- chayka: fields -->
+<div data-console-page-options="options" data-namespace="" data-ng-init="options={};" data-ng-cloak>
+    <div class="form_field stretch comments_per_page" data-form-field="comments_per_page">
+        <label class="width70">Comments per page</label><input type="text" data-ng-init="options.comments_per_page='50'" data-ng-model="options.comments_per_page" title="Comments per load"/>
     </div>
+    <div class="form_field stretch comment_order" data-form-field="comment_order">
+        <label class="width70">Comment order</label><select data-ng-init="options.comment_order='asc'; comment_orderOptions = {'asc':'ASC','desc':'DESC'}" data-ng-model="options.comment_order" data-ng-options="key as value for (key, value) in comment_orderOptions" title="Comment order"></select>
+    </div>
+    <div class="form_field fullsize checkbox preload_comments" data-form-field="preload_comments">
+        <label>
+            <input type="checkbox" data-ng-init="options.preload_comments='1'" data-ng-model="options.preload_comments" data-ng-true-value="'1'" data-ng-false-value="''" title="Preload comments"/>
+            Preload comments
+        </label>
+    </div>
+    <div class="form_field fullsize checkbox require_name_email" data-form-field="require_name_email">
+        <label>
+            <input type="checkbox" data-ng-init="options.require_name_email='1'" data-ng-model="options.require_name_email" data-ng-true-value="'1'" data-ng-false-value="''" title="Require name and email for non-authenticated users"/>
+            Require name and email for non-authenticated users
+        </label>
+    </div>
+    <div class="form_field fullsize checkbox comment_registration" data-form-field="comment_registration">
+        <label>
+            <input type="checkbox" data-ng-init="options.comment_registration=''" data-ng-model="options.comment_registration" data-ng-true-value="'1'" data-ng-false-value="''" title="Autorized users only"/>
+            Autorized users only
+        </label>
+    </div>
+    <h2>Comment avatar options:</h2>
+    <div class="form_field stretch avatar_size" data-form-field="avatar_size">
+        <label class="width60">Avatar size (px)</label><input type="text" data-ng-init="options.avatar_size='48'" data-ng-model="options.avatar_size" title="Avatar size (px)"/>
+    </div>
+    <div class="form_field stretch avatar_default" data-form-field="avatar_default">
+        <label class="width60">Gravatar type</label><select data-ng-init="options.avatar_default='mm'; avatar_defaultOptions = {'mm':'Mystery Man','blank':'Blank','':'Gravatar Logo','identicon':'Identicon','wavatar':'Wavatar','monsterid':'MonsterID','retro':'Retro'}" data-ng-model="options.avatar_default" data-ng-options="key as value for (key, value) in avatar_defaultOptions" title="Gravatar type"></select>
+    </div>
+    <div class="form_field stretch avatar_default_empty" data-form-field="avatar_default_empty">
+        <label class="width60">Guest Gravatar type</label><select data-ng-init="options.avatar_default_empty='mm'; avatar_default_emptyOptions = {'mm':'Mystery Man','blank':'Blank','':'Gravatar Logo'}" data-ng-model="options.avatar_default_empty" data-ng-options="key as value for (key, value) in avatar_default_emptyOptions" title="Anonymous Gravatar type"></select>
+    </div>
+    <div class="form_field fullsize checkbox avatar_force_default" data-form-field="avatar_force_default">
+        <label>
+            <input type="checkbox" data-ng-init="options.avatar_force_default=''" data-ng-model="options.avatar_force_default" data-ng-true-value="'1'" data-ng-false-value="''" title="Force default gravatar"/>
+            Force default gravatar
+        </label>
+    </div>
+
+
+    <!-- chayka: fields -->
 </div>
