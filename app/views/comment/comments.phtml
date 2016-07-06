@@ -18,6 +18,13 @@ $direct = $this->order == 'asc';
 $commentsAreClosed = ! comments_open();
 $thePost = \Chayka\WP\Models\PostModel::unpackDbRecord(get_post());
 ?>
+<?php if(!class_exists('\Chayka\Auth\Plugin')):?>
+<script>
+	var Chayka = Chayka || {};
+	Chayka.Users = Chayka.Users || {};
+	Chayka.Users.currentUser = <?php echo \Chayka\WP\Helpers\JsonHelper::encode(\Chayka\WP\Models\UserModel::currentUser());?>;
+</script>
+<?php endif;?>
 <script>
 	var Chayka = window.Chayka || {};
 	Chayka.Posts = Chayka.Posts || {};
